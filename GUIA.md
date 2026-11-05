@@ -8,36 +8,80 @@ App para que los roommates de una casa decidan juntos cómo decorar: descubren m
 
 ---
 
-## 1. Cómo instalar y ejecutar
+## Documentos del proyecto
 
-**Necesitas:**
+| Archivo | Qué tiene |
+|---|---|
+| `GUIA.md` | Esta guía: cómo ejecutar la app, carpetas, colores, navegación y componentes |
+| `FASE-1-propuesta.md` | Propuesta aprobada en la Fase 1: pantallas, navegación, componentes y modelo de datos |
+| `NOTAS-FIGMA.md` | Código de cada pantalla y foto del Figma, títulos y botones de cada pantalla |
+| `HISTORIAL-CONVERSACIONES.md` | Los mensajes de las conversaciones con Claude, en orden y con fecha |
+| `docs/imagenes/` | Imágenes para la documentación: colores del Figma y pantallas de la Fase 2 |
 
-- **Node.js 22** (22.13 o más reciente) o **Node.js 24**. El SDK 58 de Expo no funciona con Node 20.
-- La app **Expo Go** en el teléfono, actualizada desde la tienda (abre proyectos del SDK 58).
+---
 
-**Pasos:**
+## 1. Cómo ejecutar la app desde VS Code
 
-1. Instala las dependencias (solo la primera vez):
+### Lo que necesitas instalar (una sola vez)
+
+1. **Node.js 22** (22.13 o más reciente) o **Node.js 24**, desde [nodejs.org](https://nodejs.org). El SDK 58 de Expo no funciona con Node 20. Para revisar tu versión escribe `node --version` en una terminal.
+2. **Git**, desde [git-scm.com](https://git-scm.com).
+3. **Visual Studio Code**.
+4. **Expo Go** en el teléfono, desde la App Store o Google Play, actualizada (abre proyectos del SDK 58).
+
+### Descargar el proyecto (una sola vez)
+
+1. Abre VS Code.
+2. Presiona `Ctrl + Shift + P` (en Mac, `Cmd + Shift + P`), escribe **Git: Clone** y presiona Enter.
+3. Pega la dirección del repositorio y presiona Enter:
+
+   ```
+   https://github.com/quijanooluc1a-spec/ColivingApp.git
+   ```
+
+4. Elige la carpeta donde quieres guardarlo y, cuando VS Code pregunte, toca **Open** (Abrir).
+5. Si VS Code sugiere instalar la extensión **Expo Tools**, acéptala (ayuda con `app.json`).
+
+### Ejecutar la app
+
+1. Abre la terminal de VS Code: menú **Terminal → New Terminal** (o `` Ctrl + ` ``).
+2. La primera vez instala las librerías:
 
    ```bash
    npm install
    ```
 
-2. Arranca el proyecto:
+3. Arranca el proyecto:
 
    ```bash
    npx expo start
    ```
 
-3. Escanea el código QR que aparece en la terminal:
-   - **iPhone:** con la cámara.
-   - **Android:** con la app Expo Go.
+4. Para **ver la app**, elige una opción:
+   - **En el teléfono (recomendado):** escanea el código QR que aparece en la terminal. En Android, con la app Expo Go; en iPhone, con la cámara. El teléfono y el computador deben estar en la misma red Wi‑Fi.
+   - **En el navegador del computador:** con la terminal seleccionada, presiona la tecla `w`. Se abre la versión web, útil para revisar rápido. La app está pensada para el teléfono, así que algunos detalles se ven distintos.
+   - **En un emulador de Android:** si tienes Android Studio instalado, presiona `a`.
 
-El teléfono y el computador tienen que estar en la misma red Wi‑Fi. Si no se conectan (por ejemplo, en la red de la universidad), usa:
+Mientras `npx expo start` está corriendo, cada vez que guardas un archivo la app se actualiza sola. Para detenerlo, presiona `Ctrl + C` en la terminal.
+
+### Traer los cambios nuevos
+
+Cuando haya cambios nuevos en GitHub (por ejemplo, al terminar cada fase), tráelos con:
 
 ```bash
-npx expo start --tunnel
+git pull
 ```
+
+Si después de traer cambios aparece un error de librerías, vuelve a correr `npm install`.
+
+### Si algo no funciona
+
+| Problema | Solución |
+|---|---|
+| El teléfono no se conecta al escanear el QR (por ejemplo, en la red de la universidad) | Arranca con `npx expo start --tunnel` |
+| Expo Go dice que el proyecto usa otra versión del SDK | Actualiza Expo Go desde la tienda |
+| Error al arrancar que menciona la versión de Node | Instala Node.js 22 o 24 y vuelve a abrir VS Code |
+| `npx` o `node` no se reconocen | Node.js no quedó instalado; reinstálalo y reinicia VS Code |
 
 ---
 
@@ -59,11 +103,10 @@ ColivingApp/
 │   │   ├── Tema.jsx         ← colores, letras, bordes y espacios del Figma
 │   │   └── Stylesheet.jsx   ← todos los estilos (StyleSheet.create)
 │   └── images/              ← ícono de la app y pantalla de carga
+├── docs/imagenes/           ← imágenes para la documentación
 ├── app.json                 ← nombre, ícono y colores de la app
 ├── package.json             ← librerías que usa el proyecto
-├── FASE-1-propuesta.md      ← propuesta aprobada en la Fase 1
-├── NOTAS-FIGMA.md           ← códigos de cada pantalla y foto del Figma
-└── GUIA.md                  ← esta guía
+└── *.md                     ← documentos del proyecto (ver arriba)
 ```
 
 En las próximas fases se agregan dentro de `assets/` las carpetas `Datos/`, `Servicios/`, `Logica/` y `Contexto/`, como dice la propuesta.
@@ -74,12 +117,36 @@ En las próximas fases se agregan dentro de `assets/` las carpetas `Datos/`, `Se
 
 Todos los valores del diseño están en **un solo archivo**, `assets/Styles/Tema.jsx`. Si el Figma cambia, se cambia ahí y toda la app se actualiza.
 
+### Colores
+
+Los colores de la app son **las 12 variables de color del Figma**, con los mismos valores. De la plantilla cafe-app solo se tomó la forma de programar; sus colores (`#4B2A19` y `#F1E5D1`) no se usan en ningún archivo.
+
+| En `Tema.jsx` | Variable del Figma | Color | Dónde se usa en el Figma |
+|---|---|---|---|
+| `fondo` | `color/background` | `#FAF5EE` crema | Fondo de todas las pantallas |
+| `superficie` | `color/surface` | `#FFFFFF` blanco | Tarjetas, cajas de texto, barra inferior |
+| `borde` | `color/border` | `#E8DED2` beige | Bordes, divisores, fondo de las barras de votos |
+| `texto` | `color/text` | `#2B2420` café oscuro | Texto principal |
+| `textoSuave` | `color/text-muted` | `#8A817A` gris cálido | Etiquetas, subtítulos, precios |
+| `principal` | `color/primary` | `#D9653B` terracota | Botones, chips activos, pestaña activa |
+| `sobrePrincipal` | `color/on-primary` | `#FFFFFF` blanco | Texto encima del terracota |
+| `principalSuave` | `color/primary-soft` | `#F6DDD0` rosado | Avatar 1, sugerencia elegida, íconos del perfil |
+| `verdeSuave` | `color/secondary-soft` | `#DDE7DD` verde claro | Avatar 2, chip de vibra, aviso de ganador |
+| `amarilloSuave` | `color/accent-soft` | `#FCEBC6` amarillo | Avatar 3, aviso "Ganó el No" |
+| `meGusta` | `color/like` | `#3E8E5A` verde | Botón "Me gusta", barra positiva, interruptor |
+| `noMeGusta` | `color/dislike` | `#C8453B` rojo | Botón "No me gusta", barra negativa |
+
+En la Fase 2 casi solo se ven el crema y el terracota, porque las pantallas todavía no tienen sus partes. El amarillo, los verdes y el rosado aparecen en la Fase 3 con los avatares, los avisos, los chips de vibra y los botones de voto. Los tonos tierra de las fotos (sofás verdes, madera, plantas) llegan con las fotos de los muebles.
+
+![Colores de la app y dónde se usan en el Figma](docs/imagenes/colores-figma.png)
+
+### Letras, bordes y espacios
+
 | Grupo | Qué tiene | Ejemplo |
 |---|---|---|
-| `colores` | Los 12 colores del Figma | `colores.principal` = `#D9653B` (terracota) |
 | `fuentes` | Los nombres de las 4 letras | `fuentes.poppinsBold` |
-| `letras` | Los 7 estilos de texto: letra, tamaño y alto de línea | `letras.titulo` = Poppins Bold 22 |
-| `bordes` | Bordes redondeados | `bordes.normal` = 16 |
+| `letras` | Los 7 estilos de texto del Figma: letra, tamaño y alto de línea | `letras.titulo` = Poppins Bold 22 |
+| `bordes` | Bordes redondeados: 8, 12, 16, 24 y 999 | `bordes.normal` = 16 |
 | `espacios` | Márgenes y separaciones | `espacios.normal` = 16 (margen a los lados) |
 
 `assets/Styles/Stylesheet.jsx` arma los estilos con esos valores, agrupados como en la plantilla: `general`, `boton`, `chip`, `encabezado`, `barraInferior`, `estadoVacio` e `inicio`.
@@ -170,6 +237,7 @@ flowchart TD
   VerMB -->|Poner a votación| Elegir["18 · Elegir objeto"]
   Elegir -->|Poner a votación| NuevaEnc["23 · Nueva encuesta"]
   NuevaEnc -->|Publicar encuesta| Encuestas
+  Encuestas -->|+ Nuevo| Moodboards
   Encuestas --> Resultado["Resultado"]
   Resultado -->|Desempatar| Desempate["20 · Desempate"]
   Desempate -->|Enviar voto| Resultado
@@ -193,6 +261,7 @@ Todas las funciones vienen de `router` (`import { router } from "expo-router"`):
 | `router.push("/registro")` | Abre una pantalla encima de la actual; se puede volver | Casi todos los botones |
 | `router.back()` | Vuelve a la pantalla anterior | Botón volver del `Encabezado`, botones Cancelar, Desempate y Agregar idea |
 | `router.replace("/explorar")` | Cambia la pantalla actual por otra; no se puede volver a la anterior | Iniciar sesión, Cerrar sesión, Guardar moodboard |
+| `router.navigate("/moodboards")` | Va a una pantalla; si es una pestaña, cambia de pestaña | "+ Nuevo" de Encuestas |
 | `router.dismissAll()` | Cierra todas las pantallas de encima hasta la primera | Completar perfil → Empezar |
 | `router.dismissTo("/encuestas")` | Cierra pantallas hasta llegar a esa ruta | Publicar encuesta, Volver a Encuestas |
 
@@ -222,6 +291,8 @@ Ejemplo de uso:
 
 Los botones usan `TouchableOpacity`, que se aclara un poco al tocarlo.
 
+![Pantallas de la Fase 2](docs/imagenes/pantallas-fase-2.png)
+
 ---
 
 ## 6. Decisiones tomadas donde el Figma no era explícito
@@ -232,6 +303,7 @@ Los botones usan `TouchableOpacity`, que se aclara un poco al tocarlo.
 | Nombre de la app | **Roomies Deco**. Se cambia en `app.json` (`name`). |
 | Ícono y pantalla de carga | Se hicieron con el logo del login del Figma: la casa blanca sobre el cuadrado terracota. |
 | Modo oscuro | No hay: el Figma solo tiene modo claro (`"userInterfaceStyle": "light"` en `app.json`). |
+| "+ Nuevo" en Encuestas | Lleva a la pestaña Mood boards, porque para crear una encuesta hay que elegir un objeto de un mood board (aprobado el 5 nov 2026). En la Fase 3 el botón pasa a la fila de los avatares, como en el Figma. |
 | Barra inferior | Se usa `Tabs` de `expo-router/js-tabs` y no `NativeTabs`. La barra nativa no deja poner los íconos de Lucide ni el texto activo más grande, como en el Figma. |
 | Relleno de las pestañas | Se quita el relleno lateral que pone la librería (`tabBarButton` en `(tabs)/_layout.jsx`). Sin ese cambio, "Mood boards" no cabía en una línea. |
 | Título de "Agregar idea" | En el Figma esa pantalla tiene flecha y título de 28. Se usa 22, como en las demás pantallas con flecha. |
@@ -241,6 +313,6 @@ Los botones usan `TouchableOpacity`, que se aclara un poco al tocarlo.
 
 ## 7. Lo que sigue
 
-- **Fase 3:** construir las pantallas en el orden de la lista, con los datos de prueba (`assets/Datos`) y el contexto compartido (`assets/Contexto`).
+- **Fase 3:** construir las pantallas en el orden de la lista, con las fotos del Figma, los datos de prueba (`assets/Datos`) y el contexto compartido (`assets/Contexto`).
 - **Fase 4:** lógica de votación, desempate y sugerencias.
 - **Fase 5:** revisión final y esta guía completa: modelo de datos, votación paso a paso y cómo conectar un backend real.

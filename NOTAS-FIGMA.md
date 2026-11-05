@@ -91,8 +91,12 @@ Sacados del Figma en la Fase 2. Las pantallas con flecha usan el título de 22; 
 
 Íconos (Lucide, trazo de 24): barra inferior `Compass`, `Folder`, `LayoutGrid`, `User`; volver `ArrowLeft`; logo `House`.
 
+## Colores
+
+Las 12 variables de color del Figma (revisadas el 5 nov 2026 en las pantallas 4, 22 y 26) son las que están en `assets/Styles/Tema.jsx`. La tabla con el uso de cada una está en `GUIA.md`, sección 3. La página "logo" del Figma está vacía y no hay otra paleta.
+
 ## Estado del entorno (5 nov 2026, Fase 2)
 
-- GitHub ya está conectado. El trabajo está en la rama `claude/relaxed-dirac-prmpeb` de https://github.com/quijanooluc1a-spec/ColivingApp.
+- GitHub está conectado. El trabajo está en las ramas `main` y `claude/relaxed-dirac-prmpeb` de https://github.com/quijanooluc1a-spec/ColivingApp.
 - El MCP de Figma funciona (estructura y capturas al tamaño original del frame).
-- `www.figma.com` sigue bloqueado por la red del entorno, también en una sesión nueva. Sin ese dominio no se pueden descargar las fotos y los íconos en buena resolución, y eso hace falta en la Fase 3. Se permite en la configuración del entorno: *Network access* → *Allowed domains* → `www.figma.com`.
+- Se creó el entorno de Claude **ColivingApp**, que permite `www.figma.com`; con él ya se pueden descargar las fotos y los íconos del Figma (probado). Las sesiones nuevas de este proyecto deben usar ese entorno, no el Default.

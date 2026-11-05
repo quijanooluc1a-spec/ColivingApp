@@ -1,20 +1,20 @@
 // Valores sacados del Figma (página "Mockups").
 // Si el diseño cambia, se cambia aquí y toda la app se actualiza.
 
-// Colores
+// Colores: son las 12 variables de color del Figma (el nombre en el Figma va al lado)
 const colores = {
-  fondo: "#FAF5EE", // fondo de todas las pantallas
-  superficie: "#FFFFFF", // tarjetas, cajas de texto y barra inferior
-  borde: "#E8DED2", // bordes y divisores
-  texto: "#2B2420", // texto principal
-  textoSuave: "#8A817A", // etiquetas, subtítulos y precios
-  principal: "#D9653B", // botones, chip activo y pestaña activa
-  sobrePrincipal: "#FFFFFF", // texto encima del color principal
-  principalSuave: "#F6DDD0", // avatares y sugerencia elegida
-  verdeSuave: "#DDE7DD", // aviso de ganador
-  amarilloSuave: "#FCEBC6", // aviso "Ganó el No"
-  meGusta: "#3E8E5A", // botón "Me gusta" y barras positivas
-  noMeGusta: "#C8453B", // botón "No me gusta" y barras negativas
+  fondo: "#FAF5EE", // color/background: fondo crema de todas las pantallas
+  superficie: "#FFFFFF", // color/surface: tarjetas, cajas de texto y barra inferior
+  borde: "#E8DED2", // color/border: bordes, divisores y fondo de las barras de votos
+  texto: "#2B2420", // color/text: texto principal (café oscuro)
+  textoSuave: "#8A817A", // color/text-muted: etiquetas, subtítulos y precios
+  principal: "#D9653B", // color/primary: terracota de botones, chips y pestaña activa
+  sobrePrincipal: "#FFFFFF", // color/on-primary: texto encima del terracota
+  principalSuave: "#F6DDD0", // color/primary-soft: rosado del avatar 1 y la sugerencia elegida
+  verdeSuave: "#DDE7DD", // color/secondary-soft: verde del avatar 2, la vibra y el aviso de ganador
+  amarilloSuave: "#FCEBC6", // color/accent-soft: amarillo del avatar 3 y el aviso "Ganó el No"
+  meGusta: "#3E8E5A", // color/like: verde del botón "Me gusta", las barras positivas y el interruptor
+  noMeGusta: "#C8453B", // color/dislike: rojo del botón "No me gusta" y las barras negativas
 };
 
 // Nombres de las letras. Se cargan en src/app/_layout.jsx
@@ -38,6 +38,7 @@ const letras = {
 
 // Bordes redondeados
 const bordes = {
+  minimo: 8, // botones de voto e íconos del perfil
   pequeno: 12, // fotos pequeñas
   normal: 16, // tarjetas, cajas y botones
   grande: 24, // foto del detalle y logo
