@@ -63,7 +63,36 @@ Componentes sueltos: barra inferior `3:85`, tarjeta de mueble `3:23`, botón "+"
 | Planta decorativa | 120.000 | `3:35` |
 | Planta monstera | — | `53:485` (sugerencia) |
 
-## Estado del entorno (5 nov 2026)
+## Títulos y botones de cada pantalla
 
-- `www.figma.com` sigue bloqueado en la sesión original aunque ya se permitió en la configuración: el cambio aplica a sesiones nuevas.
-- Repositorio: https://github.com/quijanooluc1a-spec/ColivingApp
+Sacados del Figma en la Fase 2. Las pantallas con flecha usan el título de 22; las pestañas, el de 28.
+
+| # | Título | Botones |
+|---|---|---|
+| 1 | "Bienvenido" (sin encabezado, con logo) | Iniciar sesión · Crear cuenta · "Olvidé mi contraseña" |
+| 2 | Crear cuenta (con flecha) | Crear cuenta |
+| 3 | Completa tu perfil (con flecha) | Empezar |
+| 4, 6, 7, 8 | Explorar + buscador "Buscar muebles, estilos…" | Chips Todo / Sofás / Mesas / Lámparas · Cargar más ideas |
+| 9 | Detalle (con flecha) | "Guardar en Encuestas" (la propuesta lo cambia a "Guardar en moodboard") · Comprar |
+| 10 | Moodboards + chip "+ Nuevo" a la derecha | Chips Todos / Mis moodboards |
+| 11 | Moodboard (con flecha); en 14 y 17 el título es el nombre, p. ej. "Sala acogedora" | Agregar idea · Poner a votación |
+| 11b | Agregar idea (con flecha, título de 28) + buscador | Botón "+" en cada mueble |
+| 12 | Mis mood boards (con flecha) + "+ Nuevo" | — |
+| 13 | Nuevo moodboard (con flecha) | Guardar moodboard |
+| 18 | Poner a votación (con flecha) | Poner a votación · Cancelar |
+| 19 | Resultado (con flecha) | Desempatar de forma anónima · Volver a mood boards |
+| 20 | Desempate (con flecha) | Opciones "Sí, ponerla" / "No ponerla" · Enviar voto de desempate · Cancelar |
+| 21 | Decisión final (con flecha) | Ir a Encuestas · Volver a mood boards |
+| 22 | Encuestas + "Apartamento · 3 inquilinos" | "+ Nuevo" junto a los avatares · Me gusta / No me gusta · Encuesta |
+| 23 | Nueva encuesta (con flecha) | Opciones "Sí, lo ponemos" / "No, buscamos otro" · "Agregar opción" · Publicar encuesta |
+| 24 | Resultado (con flecha) | Comprar mueble · Volver a Encuestas |
+| 25 | Resultado (con flecha) | Hacer nueva propuesta · Volver a Encuestas |
+| 26 | Perfil + "Apartamento · 3 inquilinos" | Cerrar sesión |
+
+Íconos (Lucide, trazo de 24): barra inferior `Compass`, `Folder`, `LayoutGrid`, `User`; volver `ArrowLeft`; logo `House`.
+
+## Estado del entorno (5 nov 2026, Fase 2)
+
+- GitHub ya está conectado. El trabajo está en la rama `claude/relaxed-dirac-prmpeb` de https://github.com/quijanooluc1a-spec/ColivingApp.
+- El MCP de Figma funciona (estructura y capturas al tamaño original del frame).
+- `www.figma.com` sigue bloqueado por la red del entorno, también en una sesión nueva. Sin ese dominio no se pueden descargar las fotos y los íconos en buena resolución, y eso hace falta en la Fase 3. Se permite en la configuración del entorno: *Network access* → *Allowed domains* → `www.figma.com`.
