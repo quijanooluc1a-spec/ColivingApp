@@ -37,31 +37,41 @@ La propuesta aprobada está en `FASE-1-propuesta.md` (estilo de la plantilla caf
 
 Componentes sueltos: barra inferior `3:85`, tarjeta de mueble `3:23`, botón "+" de agregar idea `140:428`.
 
-## Fotos de muebles en el Figma (21) y dónde aparecen
+## Fotos de muebles del Figma (21) y cómo quedaron en la app
 
-| Mueble | Precio | Nodo donde aparece |
-|---|---|---|
-| Sofá 3 puestos | 890.000 | `3:115` (detalle) |
-| Sofá esquinero | 1.450.000 | `53:223` |
-| Sillón individual | 520.000 | `53:235` |
-| Sofá cama | 960.000 | `53:247` |
-| Love seat azul | 780.000 | `56:353` |
-| Mesa auxiliar | 150.000 | `53:303` |
-| Mesa de centro | 280.000 | `53:312` |
-| Mesa redonda | 480.000 | `53:321` |
-| Mesa flor | 320.000 | `53:330` |
-| Mesa de comedor (en el feed se llama "Mesa auxiliar") | 150.000 | `3:76` |
-| Lámpara de pie | 180.000 | `53:383` |
-| Lámpara de pie (arco negro) | 180.000 | `3:54` |
-| Lámpara de mesa | 95.000 | `53:392` |
-| Lámpara colgante | 130.000 | `53:401` |
-| Lámpara de noche | 75.000 | `53:410` |
-| Lámpara espiral | 110.000 | `56:365` |
-| Silla de comedor | 240.000 | `3:44` |
-| Estante blanco (en el feed se llama "Estante de madera") | 410.000 | `3:63` |
-| Estante de madera | — | `53:496` (sugerencia) |
-| Planta decorativa | 120.000 | `3:35` |
-| Planta monstera | — | `53:485` (sugerencia) |
+Las fotos se descargaron del Figma en su tamaño original y se guardaron en `assets/images/muebles/` (21 archivos JPG, 1,1 MB en total). Los datos de cada mueble están en `assets/Datos/muebles.jsx`.
+
+| Id | Mueble en la app | Precio en la app | Archivo | Nodo del Figma | En el Figma |
+|---|---|---|---|---|---|
+| `m1` | Sofá 3 puestos | 890.000 | `sofa-3-puestos.jpg` | `3:115` (detalle) | Igual |
+| `m2` | Sofá esquinero | 1.450.000 | `sofa-esquinero.jpg` | `53:223` | Igual |
+| `m3` | Sillón individual | 520.000 | `sillon-individual.jpg` | `53:235` | Igual |
+| `m4` | Sofá cama | 960.000 | `sofa-cama.jpg` | `53:247` | Igual |
+| `m5` | Love seat azul | 780.000 | `love-seat-azul.jpg` | `56:353` | Igual |
+| `m6` | Mesa auxiliar | 150.000 | `mesa-auxiliar.jpg` | `53:303` | Igual |
+| `m7` | Mesa de centro | 280.000 | `mesa-de-centro.jpg` | `53:312` | Igual |
+| `m8` | Mesa redonda | 480.000 | `mesa-redonda.jpg` | `53:321` | Igual |
+| `m9` | Mesa flor | 320.000 | `mesa-flor.jpg` | `53:330` | Igual |
+| `m10` | **Mesa de comedor** | **690.000** | `mesa-de-comedor.jpg` | `3:76` | En el feed se llama "Mesa auxiliar" y cuesta 150.000, igual que `m6` |
+| `m11` | Lámpara de pie | 180.000 | `lampara-de-pie.jpg` | `53:383` | Igual |
+| `m12` | **Lámpara de arco** | 180.000 | `lampara-de-arco.jpg` | `3:54` | Se llama "Lámpara de pie", igual que `m11` |
+| `m13` | Lámpara de mesa | 95.000 | `lampara-de-mesa.jpg` | `53:392` | Igual |
+| `m14` | Lámpara colgante | 130.000 | `lampara-colgante.jpg` | `53:401` | Igual |
+| `m15` | Lámpara de noche | 75.000 | `lampara-de-noche.jpg` | `53:410` | Igual |
+| `m16` | Lámpara espiral | 110.000 | `lampara-espiral.jpg` | `56:365` | Igual |
+| `m17` | Silla de comedor | 240.000 | `silla-de-comedor.jpg` | `3:44` | Igual |
+| `m18` | **Estante blanco** | 410.000 | `estante-blanco.jpg` | `3:63` | En el feed se llama "Estante de madera", igual que `m19` |
+| `m19` | Estante de madera | **520.000** | `estante-de-madera.jpg` | `53:496` (sugerencia) | Sin precio |
+| `m20` | Planta decorativa | 120.000 | `planta-decorativa.jpg` | `3:35` | Igual |
+| `m21` | Planta monstera | **160.000** | `planta-monstera.jpg` | `53:485` (sugerencia) | Sin precio |
+
+En negrilla está lo que se cambió o se inventó porque el Figma repetía un nombre o no tenía precio.
+
+El orden de `muebles.jsx` es el orden en que salen en Explorar. Primero van los 6 del feed del Figma (pantalla 4), en el mismo orden: Sofá 3 puestos, Planta decorativa, Silla de comedor, Lámpara de arco, Estante blanco y Mesa de comedor. En el Figma esos 6 se repiten cuatro veces. Después siguen los de las pantallas de categorías y de sugerencias, intercalados para que no salgan todos los sofás juntos.
+
+Las medidas, el color, los materiales, el estilo y la descripción de cada mueble no están en el Figma: se escribieron para los datos de prueba. Los 5 colores de cada mueble (`colores`) se sacaron de su foto.
+
+El Figma no tiene fotos de camas, clósets ni tocadores. Para llegar a los ~30 muebles de la propuesta hacen falta esas fotos.
 
 ## Títulos y botones de cada pantalla
 
@@ -95,8 +105,9 @@ Sacados del Figma en la Fase 2. Las pantallas con flecha usan el título de 22; 
 
 Las 12 variables de color del Figma (revisadas el 5 nov 2026 en las pantallas 4, 22 y 26) son las que están en `assets/Styles/Tema.jsx`. La tabla con el uso de cada una está en `GUIA.md`, sección 3. La página "logo" del Figma está vacía y no hay otra paleta.
 
-## Estado del entorno (5 nov 2026, Fase 2)
+## Estado del entorno (8 nov 2026, Fase 3)
 
 - GitHub está conectado. El trabajo está en las ramas `main` y `claude/relaxed-dirac-prmpeb` de https://github.com/quijanooluc1a-spec/ColivingApp.
 - El MCP de Figma funciona (estructura y capturas al tamaño original del frame).
-- Se creó el entorno de Claude **ColivingApp**, que permite `www.figma.com`; con él ya se pueden descargar las fotos y los íconos del Figma (probado). Las sesiones nuevas de este proyecto deben usar ese entorno, no el Default.
+- Se creó el entorno de Claude **ColivingApp**, que permite `www.figma.com`. Con él se descargaron las 21 fotos del Figma en la Fase 3. Las sesiones nuevas de este proyecto deben usar ese entorno, no el Default.
+- Expo Go en el teléfono todavía no abre el proyecto: pide iniciar sesión en Expo CLI con `npx expo login` (ver la tabla "Si algo no funciona" en `GUIA.md`). Mientras tanto se usa la versión web.

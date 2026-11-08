@@ -54,4 +54,9 @@ const espacios = {
   grande: 24, // margen a los lados en el inicio de sesión
 };
 
-export { bordes, colores, espacios, fuentes, letras };
+// Otras medidas
+const medidas = {
+  anchoMaximo: 480, // en el computador la app no se estira más que esto (ancho de un teléfono grande)
+};
+
+export { bordes, colores, espacios, fuentes, letras, medidas };

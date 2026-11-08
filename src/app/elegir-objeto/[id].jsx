@@ -1,17 +1,54 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { ScrollView } from "react-native";
+import { Check } from "lucide-react-native";
+import { useContext, useState } from "react";
+import { Image, ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Boton from "../../../assets/Components/Boton";
 import Encabezado from "../../../assets/Components/Encabezado";
 import EstadoVacio from "../../../assets/Components/EstadoVacio";
-import { general } from "../../../assets/Styles/Stylesheet";
+import { AppContexto } from "../../../assets/Contexto/AppContexto";
+import { buscarMueble } from "../../../assets/Servicios/muebles";
+import { elegir, general } from "../../../assets/Styles/Stylesheet";
+import { colores, espacios, medidas } from "../../../assets/Styles/Tema";
 
-// Pantalla 18 del Figma: Poner a votación (elegir UN objeto del mood board)
+// Pantalla 18 del Figma: Poner a votación (se elige UN solo objeto del mood board)
 function ElegirObjeto() {
   const { id } = useLocalSearchParams();
+  const { usuario, moodboards, encuestas } = useContext(AppContexto);
+  const [elegido, setElegido] = useState(null); // id del mueble elegido
+  const anchoPantalla = Math.min(useWindowDimensions().width, medidas.anchoMaximo);
 
-  function ponerAVotacion() {
-    router.push("/encuesta/nueva");
+  if (!usuario) {
+    return null;
+  }
+
+  const moodboard = moodboards.find(function (m) {
+    return m.id === id;
+  });
+  if (!moodboard) {
+    return null;
+  }
+
+  // Solo se pueden votar muebles del catálogo (no las fotos del carrete)
+  const muebles = moodboard.ideas
+    .filter(function (idea) {
+      return idea.id_mueble;
+    })
+    .map(function (idea) {
+      return buscarMueble(idea.id_mueble);
+    });
+
+  // Un mueble que ya tiene una encuesta activa no se puede volver a poner a votación
+  function estaEnVotacion(idMueble) {
+    return encuestas.some(function (e) {
+      return e.id_mueble === idMueble && e.estado === "activa";
+    });
+  }
+
+  const anchoTarjeta = (anchoPantalla - espacios.normal * 2 - 14) / 2;
+
+  function continuar() {
+    router.push("/encuesta/nueva?mueble=" + elegido + "&moodboard=" + moodboard.id);
   }
 
   function cancelar() {
@@ -22,13 +59,52 @@ function ElegirObjeto() {
     <SafeAreaView style={general.pantalla}>
       <Encabezado titulo="Poner a votación" conVolver={true} />
       <ScrollView contentContainerStyle={general.contenido}>
-        <EstadoVacio
-          titulo="Pantalla 18 · Elegir un objeto"
-          mensaje={"Mood board " + id + ". Aquí se elige UN objeto para la votación (Fase 3)."}
-        />
-        <Boton texto="Poner a votación" alPresionar={ponerAVotacion} />
-        <Boton texto="Cancelar" tipo="secundario" alPresionar={cancelar} />
+        <Text style={general.titulo}>¿Qué objeto quieres poner a votación?</Text>
+        <Text style={general.textoSuave}>
+          Elige solo uno de los objetos de «{moodboard.nombre}». Tus roomies votarán sobre ese objeto.
+        </Text>
+
+        {muebles.length === 0 ? (
+          <EstadoVacio titulo="Este mood board no tiene muebles" mensaje="Agrega una idea del catálogo para votarla." />
+        ) : null}
+
+        <View style={elegir.grilla}>
+          {muebles.map(function (mueble) {
+            const enVotacion = estaEnVotacion(mueble.id);
+            const esElegido = elegido === mueble.id;
+            return (
+              <TouchableOpacity
+                key={mueble.id}
+                style={[esElegido ? elegir.objetoElegido : elegir.objeto, { width: anchoTarjeta }]}
+                onPress={function () {
+                  setElegido(mueble.id);
+                }}
+                disabled={enVotacion}
+                activeOpacity={0.8}
+                accessibilityState={{ selected: esElegido, disabled: enVotacion }}
+              >
+                <Image source={mueble.imagen} style={elegir.foto} resizeMode="cover" />
+                <View style={elegir.info}>
+                  <Text style={elegir.nombre}>{mueble.nombre}</Text>
+                  {enVotacion ? <Text style={general.textoPequeno}>Ya está en votación</Text> : null}
+                </View>
+                {esElegido ? (
+                  <View style={elegir.marca}>
+                    <Check color={colores.sobrePrincipal} size={14} strokeWidth={3} />
+                  </View>
+                ) : (
+                  <View style={elegir.circulo} />
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       </ScrollView>
+
+      <View style={general.acciones}>
+        <Boton texto="Poner a votación" alPresionar={continuar} deshabilitado={elegido === null} />
+        <Boton texto="Cancelar" tipo="secundario" alPresionar={cancelar} />
+      </View>
     </SafeAreaView>
   );
 }

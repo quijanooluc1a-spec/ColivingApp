@@ -1,20 +1,31 @@
 import { router } from "expo-router";
-import { ScrollView } from "react-native";
+import { useContext } from "react";
+import { ScrollView, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Boton from "../../assets/Components/Boton";
 import Chip from "../../assets/Components/Chip";
 import Encabezado from "../../assets/Components/Encabezado";
-import EstadoVacio from "../../assets/Components/EstadoVacio";
-import { general } from "../../assets/Styles/Stylesheet";
+import TarjetaMoodboard from "../../assets/Components/TarjetaMoodboard";
+import { AppContexto } from "../../assets/Contexto/AppContexto";
+import { fuenteDeIdea } from "../../assets/Servicios/muebles";
+import { general, moodboards as estilos } from "../../assets/Styles/Stylesheet";
+import { espacios, medidas } from "../../assets/Styles/Tema";
 
 // Pantalla 12 del Figma: Mis mood boards (se abre desde el Perfil)
 function MisMoodboards() {
-  function irANuevoMoodboard() {
-    router.push("/moodboard/nuevo");
+  const { usuario, moodboards } = useContext(AppContexto);
+  const anchoPantalla = Math.min(useWindowDimensions().width, medidas.anchoMaximo);
+
+  if (!usuario) {
+    return null;
   }
 
-  function verMoodboardDeEjemplo() {
-    router.push("/moodboard/mb1");
+  const anchoTarjeta = (anchoPantalla - espacios.normal * 2 - espacios.medio) / 2;
+  const misMoodboards = moodboards.filter(function (moodboard) {
+    return moodboard.id_dueno === usuario.id;
+  });
+
+  function irANuevoMoodboard() {
+    router.push("/moodboard/nuevo");
   }
 
   return (
@@ -25,11 +36,23 @@ function MisMoodboards() {
         botonDerecha={<Chip texto="+ Nuevo" seleccionado={true} alPresionar={irANuevoMoodboard} />}
       />
       <ScrollView contentContainerStyle={general.contenido}>
-        <EstadoVacio
-          titulo="Pantalla 12 · Mis mood boards"
-          mensaje="Aquí van solo los mood boards que creaste (Fase 3)."
-        />
-        <Boton texto="Ver un mood board de ejemplo" alPresionar={verMoodboardDeEjemplo} />
+        <View style={estilos.grilla}>
+          {misMoodboards.map(function (moodboard) {
+            return (
+              <TarjetaMoodboard
+                key={moodboard.id}
+                titulo={moodboard.nombre}
+                subtitulo={moodboard.compartido ? "Compartido con la casa" : "Borrador"}
+                fotos={moodboard.ideas.slice(0, 3).map(fuenteDeIdea)}
+                ancho={anchoTarjeta}
+                alPresionar={function () {
+                  router.push("/moodboard/" + moodboard.id);
+                }}
+              />
+            );
+          })}
+          <TarjetaMoodboard esNuevo={true} ancho={anchoTarjeta} alPresionar={irANuevoMoodboard} />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
