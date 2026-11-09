@@ -69,17 +69,18 @@ function Registro() {
           esContrasena={true}
         />
         {error !== "" ? <Aviso texto={error} tipo="alerta" /> : null}
-      </ScrollView>
 
-      <View style={general.acciones}>
-        <Boton texto={enviando ? "Creando cuenta…" : "Crear cuenta"} alPresionar={crearCuenta} deshabilitado={enviando} />
-        <View style={inicio.enlace}>
-          <Text style={general.textoSuave}>¿Ya tienes cuenta?</Text>
-          <TouchableOpacity onPress={volverAlInicio}>
-            <Text style={inicio.textoEnlace}>Inicia sesión</Text>
-          </TouchableOpacity>
+        {/* Como en el Figma, el botón va debajo de los campos (no pegado abajo de la pantalla) */}
+        <View style={inicio.accionesRegistro}>
+          <Boton texto={enviando ? "Creando cuenta…" : "Crear cuenta"} alPresionar={crearCuenta} deshabilitado={enviando} />
+          <View style={inicio.enlace}>
+            <Text style={general.textoSuave}>¿Ya tienes cuenta?</Text>
+            <TouchableOpacity onPress={volverAlInicio}>
+              <Text style={inicio.textoEnlace}>Inicia sesión</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

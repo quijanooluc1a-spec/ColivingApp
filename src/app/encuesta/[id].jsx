@@ -72,8 +72,9 @@ function ResultadoEncuesta() {
     cerrarEncuesta(encuesta.id);
   }
 
-  // Las dos barras de resultado (Sí y No) de una ronda
-  function barras(votosDeLaRonda) {
+  // Las dos barras de resultado (Sí y No) de una ronda.
+  // En el empate y en la decisión final el Figma pinta las dos de verde (ambasVerdes).
+  function barras(votosDeLaRonda, ambasVerdes) {
     return (
       <>
         <BarraResultado
@@ -86,7 +87,7 @@ function ResultadoEncuesta() {
           texto={encuesta.texto_no}
           votos={votosDeLaRonda.no}
           total={votosDeLaRonda.total}
-          tipo="no"
+          tipo={ambasVerdes ? "si" : "no"}
         />
       </>
     );
@@ -103,7 +104,7 @@ function ResultadoEncuesta() {
             tipo="exito"
           />
           <Image source={mueble.imagen} style={resultado.fotoDecision} resizeMode="cover" />
-          {barras(conteo)}
+          {barras(conteo, true)}
           <Text style={general.textoSuave}>
             Así se llegó: empate {marcador(ronda1)}, desempate anónimo y resultado {marcador(conteo)}.
           </Text>
@@ -130,7 +131,7 @@ function ResultadoEncuesta() {
             {mueble.nombre} · votaron {ronda1.total}
             {deCuantos}
           </Text>
-          {barras(ronda1)}
+          {barras(ronda1, true)}
           <Aviso
             texto="Para desempatar, cada inquilino vota otra vez de forma anónima. Si después de 2 rondas sigue el empate, el mueble no se pone."
             tipo="exito"

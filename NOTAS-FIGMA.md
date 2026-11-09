@@ -103,7 +103,39 @@ Sacados del Figma en la Fase 2. Las pantallas con flecha usan el título de 22; 
 
 ## Colores
 
-Las 12 variables de color del Figma (revisadas el 5 nov 2026 en las pantallas 4, 22 y 26) son las que están en `assets/Styles/Tema.jsx`. La tabla con el uso de cada una está en `GUIA.md`, sección 3. La página "logo" del Figma está vacía y no hay otra paleta.
+Las 12 variables de color del Figma (revisadas el 5 nov 2026 en las pantallas 4, 22 y 26) son las que están en `assets/Styles/Tema.jsx`. La tabla con el uso de cada una está en `GUIA.md`, sección 4. La página "logo" del Figma está vacía y no hay otra paleta.
+
+## Revisión final contra el Figma (9 nov 2026, Fase 5)
+
+Se compararon lado a lado con la app 23 pantallas: las 10 de la Fase 3 (inicio de sesión, Explorar, detalle del mueble, Mood boards, un mood board, Encuestas, nueva encuesta, resultado, no ganó y perfil) y 13 más en la Fase 5 (2, 3, 10b, 11b, 12, 13, 14, 17, 18, 19, 20, 21 y 25b). No se compararon por separado las pantallas 6, 7 y 8, que son Explorar con un filtro.
+
+**Lo que se corrigió en la Fase 5 para que quede como en el Figma:**
+
+| Pantalla | Antes en la app | Ahora (como en el Figma) |
+|---|---|---|
+| 2 · Registro | El botón "Crear cuenta" iba pegado abajo de la pantalla | Va debajo de los campos |
+| 14 y 17 · Avisos "Mood board guardado" e "Idea agregada" | Check dentro de un círculo y texto oscuro | Check simple y texto verde (`color/like`) |
+| 19 · Empate y 21 · Decisión final | La barra del "no" era roja | Las dos barras son verdes |
+| 20 · Desempate | La opción elegida quedaba rosada | Queda blanca con borde naranja y un check |
+| 25 y 25b · Sugerencias | La sugerencia elegida tenía un check | Tiene un punto naranja lleno |
+
+**Las diferencias que quedan a propósito:**
+
+| Pantalla | En el Figma | En la app | Por qué |
+|---|---|---|---|
+| Todas | Arriba hay espacio para la hora y la batería | En el navegador todo queda un poco más arriba | En el teléfono, `SafeAreaView` deja ese espacio. En el navegador no hay barra de estado |
+| 3 · Completar perfil | 4 vibras | 5 vibras (también "Industrial") | Es la misma lista de la pantalla 13, donde el Figma sí tiene "Industrial" |
+| 9 · Detalle | "Guardar en Encuestas" | "Guardar en moodboard", con medidas y materiales | Decisión 1 de la propuesta y sección 8 de la propuesta |
+| 11b · Agregar idea | Título de 28 y "+" en todos los muebles | Título de 22, y un check en los muebles que ya están en el mood board | Igual que las demás pantallas con flecha; el check evita agregar dos veces lo mismo |
+| 13 · Nuevo mood board | Círculo "+" en la paleta | Sin ese círculo; casilla "+ Fotos" para subir fotos del carrete | La paleta se calcula sola con las fotos |
+| 14, 15 y 17 · Mood board | Solo la paleta | Además "¿Qué combina?" y "Vibra" | Lo pide el requerimiento (paredes, pisos, muebles y luz) |
+| 18 · Elegir objeto | Todos se pueden elegir | "Ya está en votación" o "Ya se aprobó" en los que no se pueden elegir | Regla de la Fase 4 |
+| 19 · Empate | "Si vuelve a empatar, se vota de nuevo hasta decidir" | "Si después de 2 rondas sigue el empate, el mueble no se pone", y cuántos votaron en el desempate | Decisión 3 de la propuesta (aprobada): la votación siempre termina |
+| 20 · Desempate | — | "Votaron 2 de 3 inquilinos · cierra en 20 h" | Para saber cuánto falta |
+| 21, 25 y 25b | Comillas rectas ("No") | Comillas latinas («No») | Son las comillas del español; la app las usa en todos los textos |
+| 22 · Encuestas | Solo encuestas activas | También "Por desempatar" y "Terminadas" | Para ver los empates pendientes y los resultados |
+| 23 · Nueva encuesta | "+ Agregar opción" | Dos opciones con chips de textos rápidos | Decisión 2 de la propuesta |
+| 25 y 25b · Sugerencias | "Coincide con Inquilino 1 y 4" | "Coincide con Ana y Mateo", calculadas con los mood boards | Las sugerencias son reales (sección 9 de `GUIA.md`) |
 
 ## Estado del entorno (8 nov 2026, Fase 3)
 

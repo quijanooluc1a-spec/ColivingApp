@@ -74,6 +74,7 @@ function Desempate() {
           titulo={encuesta.texto_si}
           subtitulo={mueble.nombre}
           tamanoFoto={72}
+          conCheck={true}
           seleccionado={elegida === "si"}
           alPresionar={function () {
             setOpcion("si");
@@ -84,6 +85,7 @@ function Desempate() {
           titulo={encuesta.texto_no}
           subtitulo={mueble.nombre}
           tamanoFoto={72}
+          conCheck={true}
           seleccionado={elegida === "no"}
           alPresionar={function () {
             setOpcion("no");

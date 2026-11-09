@@ -643,6 +643,12 @@ const aviso = StyleSheet.create({
     ...letras.etiqueta,
     color: colores.texto,
   },
+  // Con ícono ("Mood board guardado", "Idea agregada"): el texto va verde, como en el Figma
+  textoConIcono: {
+    flex: 1,
+    ...letras.etiqueta,
+    color: colores.meGusta,
+  },
 });
 
 // Círculo con iniciales (Avatar.jsx)
@@ -680,6 +686,17 @@ const tarjetaOpcion = StyleSheet.create({
     gap: espacios.medio,
     padding: 11, // 1 menos porque el borde es 1 más grueso
     backgroundColor: colores.principalSuave,
+    borderWidth: 2,
+    borderColor: colores.principal,
+    borderRadius: bordes.normal,
+  },
+  // Elegida en el desempate (pantalla 20 del Figma): fondo blanco, solo cambia el borde
+  contenedorMarcado: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: espacios.medio,
+    padding: 11,
+    backgroundColor: colores.superficie,
     borderWidth: 2,
     borderColor: colores.principal,
     borderRadius: bordes.normal,
@@ -828,6 +845,11 @@ const inicio = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 6,
+  },
+  // Registro: el botón queda 124 px debajo de los campos, como en el Figma (pantalla 2)
+  accionesRegistro: {
+    marginTop: 108, // + 16 de separación del contenido = 124
+    gap: espacios.medio,
   },
 });
 

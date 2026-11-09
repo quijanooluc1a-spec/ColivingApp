@@ -2,10 +2,9 @@
 
 App para que los roommates de una casa decidan juntos cómo decorar: descubren muebles, arman mood boards y votan qué entra al espacio común.
 
-> **Estado: Fase 4 terminada.** La app está completa y usa datos de prueba.
+> **Estado: Fase 5 terminada. El proyecto está completo.**
 > Se puede iniciar sesión, explorar muebles, armar mood boards, crear encuestas y votar. Las encuestas se cierran solas (cuando votan todos o cuando se acaba el tiempo), se cuentan, se desempatan y, si un mueble no gana, la app sugiere otros (sección 9).
-> Falta la Fase 5: revisión final y cómo conectar una base de datos real (sección 12).
-> Esta guía se completa en cada fase.
+> La app funciona con los datos de prueba o con una base de datos real en **Supabase**. Para conectarla hay una guía paso a paso: [`GUIA-SUPABASE.md`](GUIA-SUPABASE.md).
 
 ---
 
@@ -15,8 +14,11 @@ App para que los roommates de una casa decidan juntos cómo decorar: descubren m
 |---|---|
 | `GUIA.md` | Esta guía: cómo ejecutar y probar la app, carpetas, colores, navegación, datos, componentes y decisiones |
 | `FASE-1-propuesta.md` | Propuesta aprobada en la Fase 1: pantallas, navegación, componentes y modelo de datos |
-| `NOTAS-FIGMA.md` | Código de cada pantalla y foto del Figma, títulos y botones de cada pantalla, y qué foto usa cada mueble |
-| `docs/imagenes/` | Imágenes para la documentación: colores del Figma y pantallas de las fases 2, 3 y 4 |
+| `GUIA-SUPABASE.md` | Cómo conectar la app a una base de datos en Supabase, paso a paso, para programadores junior |
+| `supabase/` | Los 5 archivos SQL de la base de datos (tablas, seguridad, fotos, catálogo y datos de prueba) |
+| `.env.ejemplo` | La plantilla del archivo `.env.local`, que tiene la dirección y la clave de Supabase |
+| `NOTAS-FIGMA.md` | Código de cada pantalla y foto del Figma, títulos y botones de cada pantalla, qué foto usa cada mueble y la revisión final |
+| `docs/imagenes/` | Imágenes para la documentación: colores del Figma, pantallas de las fases 2, 3 y 4, y la comparación final con el Figma |
 
 El historial de las conversaciones con Claude no está en el repositorio, porque el repositorio es público. Se entregó como un archivo aparte.
 
@@ -74,7 +76,7 @@ Cuando haya cambios nuevos en GitHub (por ejemplo, al terminar cada fase), tráe
 git pull
 ```
 
-Si después de traer cambios aparece un error de librerías, vuelve a correr `npm install`. En la Fase 3 se agregaron librerías nuevas, así que hay que correrlo una vez.
+Si después de traer cambios aparece un error de librerías, vuelve a correr `npm install`. En las fases 3 y 5 se agregaron librerías nuevas, así que hay que correrlo una vez.
 
 ### Si algo no funciona
 
@@ -93,7 +95,7 @@ Si después de traer cambios aparece un error de librerías, vuelve a correr `np
 
 ### Cuentas de prueba
 
-Las tres viven en la misma casa, "Apartamento", y usan la contraseña `1234`.
+Las tres viven en la misma casa, "Apartamento", y usan la contraseña `1234`. Con Supabase, las cuentas de prueba usan `123456`, porque Supabase pide al menos 6 caracteres (ver `GUIA-SUPABASE.md`, paso 6).
 
 | Correo | Persona | Sus mood boards |
 |---|---|---|
@@ -153,18 +155,23 @@ ColivingApp/
 │   │   └── explorar.jsx, encuestas.jsx, moodboards.jsx, perfil.jsx
 │   └── ...                  ← el resto de pantallas (ver la sección 5)
 ├── assets/
-│   ├── Components/          ← los 22 componentes reutilizables, uno por archivo (sección 7)
+│   ├── Components/          ← los 23 componentes reutilizables, uno por archivo (sección 7)
 │   ├── Contexto/
 │   │   └── AppContexto.jsx  ← los datos que comparten todas las pantallas (sección 6)
 │   ├── Datos/               ← datos de prueba: casa, usuarios, muebles, mood boards, encuestas y votos
 │   ├── Logica/              ← funciones de textos, paleta de colores y reglas de votación (secciones 8 y 9)
-│   ├── Servicios/
-│   │   └── muebles.jsx      ← entrega los muebles de 10 en 10 (hoy desde Datos; mañana desde una base de datos)
+│   ├── Servicios/           ← de dónde salen los datos (sección 6)
+│   │   ├── baseDeDatos.jsx      ← la puerta: elige entre los datos de prueba y Supabase
+│   │   ├── conDatosDePrueba.jsx ← los datos de assets/Datos, en memoria
+│   │   ├── conSupabase.jsx      ← los datos de Supabase (ver GUIA-SUPABASE.md)
+│   │   └── clienteSupabase.jsx  ← la conexión con Supabase
 │   ├── Styles/
 │   │   ├── Tema.jsx         ← colores, letras, bordes y espacios del Figma
 │   │   └── Stylesheet.jsx   ← todos los estilos (StyleSheet.create)
 │   └── images/              ← ícono, pantalla de carga y muebles/ (las 21 fotos del Figma)
 ├── docs/imagenes/           ← imágenes para la documentación
+├── supabase/                ← los 5 archivos SQL para crear la base de datos en Supabase
+├── .env.ejemplo             ← plantilla de .env.local (dirección y clave de Supabase)
 ├── app.json                 ← nombre, ícono, colores y permiso para leer fotos
 ├── package.json             ← librerías que usa el proyecto
 └── *.md                     ← documentos del proyecto (ver arriba)
@@ -239,7 +246,7 @@ En `Stylesheet.jsx` vas a ver `...letras.titulo`. Los tres puntos copian dentro 
 | Agregar idea, "+ Fotos", "Nuevo mood board" | `Plus` |
 | Idea elegida o ya agregada | `Check` |
 | Botones de voto | `ThumbsUp`, `ThumbsDown` |
-| Avisos de éxito | `CircleCheck` |
+| Avisos "Mood board guardado" e "Idea agregada" | `Check` |
 | Filas del perfil | `Folder`, `ThumbsUp`, `Bell`, `Vote`, `Trophy` y la flecha `ChevronRight` |
 
 ---
@@ -363,28 +370,30 @@ Ejemplos:
 ## 6. Datos de prueba y cómo viajan
 
 ```
-assets/Datos   →   assets/Servicios   →   AppContexto (useState)   →   pantallas (useContext)
-(datos de prueba)   (funciones)           (datos compartidos)          (lo que se ve)
+assets/Datos  ─┐
+               ├→  Servicios/baseDeDatos.jsx  →  AppContexto (useState)  →  pantallas (useContext)
+Supabase      ─┘   (la puerta)                   (datos compartidos)         (lo que se ve)
 ```
 
-- **`assets/Datos`** son listas de objetos, como las filas de una tabla. El día que se conecte una base de datos (por ejemplo Supabase, como en cafe-app), cada archivo se convierte en una tabla.
-- **`assets/Servicios/muebles.jsx`** entrega los muebles: `obtenerMuebles(pagina, categoria, busqueda)` espera 0,4 segundos, como si los datos llegaran de internet, y devuelve 10. Al conectar una base de datos, este es el archivo que cambia; el comentario de la función muestra cómo quedaría.
-- **`assets/Contexto/AppContexto.jsx`** es una caja compartida. Guarda con `useState` quién inició sesión, los usuarios, los mood boards, las encuestas y los votos, y tiene las funciones que los cambian.
-- **Las pantallas** la usan así:
+- **`assets/Servicios/baseDeDatos.jsx`** es la única puerta a los datos. Si el archivo `.env.local` tiene la dirección y la clave de Supabase, usa `conSupabase.jsx`; si no, usa `conDatosDePrueba.jsx`. Las dos tienen las mismas funciones y devuelven los datos con la misma forma, así que las pantallas no notan la diferencia. Cómo conectar Supabase: [`GUIA-SUPABASE.md`](GUIA-SUPABASE.md).
+- **`assets/Datos`** son listas de objetos, como las filas de una tabla. En Supabase, cada archivo es una tabla (ver `supabase/1-tablas.sql`).
+- **`assets/Contexto/AppContexto.jsx`** es una caja compartida. Guarda con `useState` quién inició sesión, los usuarios, los mood boards, las encuestas y los votos, y tiene las funciones que los cambian. Cada cambio sigue dos pasos: guarda en la base de datos y vuelve a cargar los datos (`cargarYCerrar`). Esa recarga también cierra las encuestas a las que ya les toca.
+- **Las pantallas** la usan así. Las funciones que cambian algo son `async`, por eso se espera su respuesta con `await`:
 
   ```jsx
   const { usuario, encuestas, votar } = useContext(AppContexto);
+  const estado = await votar(encuesta.id, "si");
   ```
 
 ### Lo que hay en `AppContexto`
 
-**Datos:** `casa`, `usuario` (quién inició sesión, o `null`), `usuarios`, `roommates` (los de la casa), `moodboards`, `moodboardsDeLaCasa` (los compartidos de la casa más todos los míos), `encuestas` y `votos`.
+**Datos:** `casa`, `usuario` (quién inició sesión, o `null`), `usuarios`, `roommates` (los de la casa), `moodboards`, `moodboardsDeLaCasa` (los compartidos de la casa más todos los míos), `encuestas` y `votos`. También `listo` (ya se revisó si quedó una sesión guardada) y `error` (el último problema al hablar con la base de datos; `_layout.jsx` lo muestra arriba de la pantalla con `MensajeDeError`).
 
-**Funciones:**
+**Funciones** (todas son `async`; si algo falla devuelven `null` y dejan el mensaje en `error`):
 
 | Función | Qué hace | Dónde se usa |
 |---|---|---|
-| `iniciarSesion(correo, contrasena)` | Si el correo y la contraseña son de alguien, inicia la sesión y devuelve `true` | Inicio de sesión |
+| `iniciarSesion(correo, contrasena)` | Inicia la sesión. Devuelve `""` si entró, o un mensaje ("El correo o la contraseña no coinciden.") | Inicio de sesión |
 | `registrarse(nombre, correo, contrasena)` | Crea la cuenta en la casa "Apartamento". Devuelve `""` si salió bien o un mensaje de error | Registro |
 | `completarPerfil(nombre, convive, vibras)` | Guarda el nombre, con quién vive y su vibra | Completar perfil |
 | `cerrarSesion()` | Cierra la sesión | Perfil |
@@ -396,7 +405,7 @@ assets/Datos   →   assets/Servicios   →   AppContexto (useState)   →   pan
 | `votar(idEncuesta, valor)` | Guarda el voto (`"si"` o `"no"`) en la ronda abierta. Si la persona ya había votado en esa ronda, cambia su voto. Si con ese voto ya votaron todos, cierra la ronda. Devuelve el estado de la encuesta después de votar | Encuestas, Encuesta, Desempate |
 | `cerrarEncuesta(idEncuesta)` | Quien creó la encuesta la cierra antes de tiempo: se cuentan los votos que hay. Devuelve el estado nuevo | Encuesta (activa y empate) |
 
-Además, `AppContexto` tiene un `useEffect` con `setInterval` que **cada 30 segundos** revisa si a alguna encuesta se le acabó el tiempo y la cierra.
+Además, `AppContexto` tiene un `useEffect` con `setInterval` que **cada 30 segundos** vuelve a cargar los datos (así se ven los votos de los demás) y cierra las encuestas a las que se les acabó el tiempo. Con Supabase, otro `useEffect` revisa al abrir la app si quedó una sesión guardada.
 
 ### Modelo de datos
 
@@ -416,6 +425,12 @@ Cambios frente a la propuesta de la Fase 1:
 - La encuesta guarda el mueble (`id_mueble`) en vez de la idea, y la hora de cierre es un número (milisegundos, como `Date.now()`). Así es fácil calcular "cierra en 4 h".
 - El mood board no guarda sus colores: se calculan con sus ideas cada vez, y por eso cambian al agregar una idea.
 - El mueble no tiene `url_tienda`: el botón Comprar arma la búsqueda en Homecenter con el nombre del mueble.
+
+En Supabase las tablas son las mismas (ver `supabase/1-tablas.sql`), con tres diferencias que `conSupabase.jsx` convierte para que la app reciba la misma forma:
+
+- Las ideas de cada mood board y los muebles guardados están en tablas aparte (`ideas` y `guardados`).
+- Las fechas se guardan como fecha y hora (`timestamptz`), y la app las recibe en milisegundos.
+- Los ids de usuarios, mood boards, ideas, encuestas y votos son `uuid` (los crea Supabase). Los muebles conservan `m1`, `m2`…
 
 ### Lo que traen los datos de prueba
 
@@ -438,7 +453,7 @@ Cambios frente a la propuesta de la Fase 1:
 
 ## 7. Componentes
 
-Están en `assets/Components`. Cada uno es una función con sus props entre llaves y `export default` al final, como `ProductoItem` en la plantilla. Son los 20 de la propuesta más dos: `Catalogo`, que junta los chips y la grilla para usarlos en Explorar y en Agregar idea, y `CerrarEncuesta` (Fase 4).
+Están en `assets/Components`. Cada uno es una función con sus props entre llaves y `export default` al final, como `ProductoItem` en la plantilla. Son los 20 de la propuesta más tres: `Catalogo`, que junta los chips y la grilla para usarlos en Explorar y en Agregar idea; `CerrarEncuesta` (Fase 4), y `MensajeDeError` (Fase 5).
 
 | Componente | Para qué sirve | Props |
 |---|---|---|
@@ -458,12 +473,13 @@ Están en `assets/Components`. Cada uno es una función con sus props entre llav
 | `BotonVoto` | Botón verde (sí) o rojo (no), relleno cuando es tu voto | `texto`, `tipo` (`"si"` o `"no"`), `seleccionado`, `alPresionar` |
 | `TarjetaEncuesta` | Encuesta en la lista: foto, datos, conteo y botones para votar | `encuesta`, `mueble`, `creador`, `conteo`, `miVoto`, `alVotar`, `alAbrir` |
 | `BarraResultado` | Barra con los votos de una opción | `texto`, `votos`, `total`, `tipo` |
-| `Aviso` | Mensaje de color: verde, amarillo o neutro | `texto`, `tipo` (`"exito"`, `"alerta"` o `"info"`), `conIcono` |
+| `Aviso` | Mensaje de color: verde, amarillo o neutro. Con `conIcono` lleva un check y el texto en verde ("Mood board guardado") | `texto`, `tipo` (`"exito"`, `"alerta"` o `"info"`), `conIcono` |
 | `Avatar` | Círculo con las iniciales | `iniciales`, `tamano`, `color` |
-| `TarjetaOpcion` | Fila con foto, título, subtítulo y círculo para elegir (sugerencias, desempate, hoja de guardar) | `foto`, `titulo`, `subtitulo`, `seleccionado`, `alPresionar`, `tamanoFoto` |
+| `TarjetaOpcion` | Fila con foto, título, subtítulo y círculo para elegir. Elegida queda rosada con un punto (sugerencias) o, con `conCheck`, blanca con un check (desempate) | `foto`, `titulo`, `subtitulo`, `seleccionado`, `alPresionar`, `tamanoFoto`, `conCheck` |
 | `TarjetaEstadistica` | Número grande con su etiqueta (perfil y medidas del mueble) | `numero`, `etiqueta`, `alPresionar` |
 | `FilaAjuste` | Fila del perfil con ícono y flecha o interruptor | `Icono`, `texto`, `alPresionar`, `derecha` |
 | `CerrarEncuesta` | Botón para que quien creó la encuesta la cierre antes. Primero pide confirmar y explica qué va a pasar | `texto`, `explicacion`, `alConfirmar` |
+| `MensajeDeError` | Mensaje arriba de la pantalla cuando falla algo al hablar con la base de datos (por ejemplo, sin internet), con un botón "Cerrar" | `texto`, `alCerrar` |
 
 Ejemplo de uso, tomado de `src/app/(tabs)/encuestas.jsx`:
 
@@ -670,6 +686,25 @@ Así cuenta primero la categoría, después cuántos lo quieren y al final los c
 | Sugerencias | Solo de mood boards compartidos (los borradores son privados) y sin muebles que ya tienen encuesta. Si no queda ninguno, el botón cambia a "Ir a mood boards". |
 | Marcador | "2 – 1" se escribe con espacios que no se cortan, para que no quede partido en dos líneas. |
 
+### Fase 5
+
+| Tema | Decisión |
+|---|---|
+| Base de datos | **Supabase**, con la librería oficial `@supabase/supabase-js`. La plantilla cafe-app usaba la API con `axios`, pero la librería se encarga sola del inicio de sesión, de renovar la sesión y de subir fotos. |
+| Una sola puerta a los datos | `assets/Servicios/baseDeDatos.jsx` elige entre los datos de prueba y Supabase según `.env.local`. Así, sin `.env.local`, la app sigue funcionando como antes, y las pantallas no cambian. |
+| Funciones `async` | Todas las funciones del contexto que cambian algo esperan la respuesta. Mientras tanto, los botones dicen "Entrando…", "Guardando…" o "Publicando…" y no se pueden tocar. |
+| Después de cada cambio | La app vuelve a cargar todos los datos. Es más simple que actualizar cada lista a mano y casi no se nota, porque son pocos datos. |
+| Votos de los demás | Llegan porque la app recarga los datos cada 30 segundos. Supabase Realtime sería al instante, pero es más complejo; queda para después (ver `GUIA-SUPABASE.md`). |
+| Cierre de encuestas | Lo hace la app, con las reglas de `votacion.jsx`, y lo guarda solo si nadie la cerró antes. Así no hace falta programar nada en el servidor. |
+| Perfil de una cuenta nueva | Lo crea la base de datos sola (un disparador), con el nombre que manda la app. Así ninguna cuenta queda sin perfil. |
+| Contraseñas | 4 caracteres con los datos de prueba y 6 con Supabase, que es lo mínimo que pide. La pantalla de registro usa el mínimo que corresponde. |
+| Sesión guardada | Con Supabase, la sesión queda guardada en el teléfono o en el navegador: al volver a abrir la app no hay que iniciar sesión. Con los datos de prueba no se guarda. |
+| Cuentas de prueba en el inicio de sesión | El texto "Cuentas de prueba: …" solo sale con los datos de prueba. Con Supabase sirve como señal de que la conexión funciona. |
+| Sin conexión | Si algo falla al hablar con Supabase, sale un mensaje arriba de la pantalla ("No hay conexión con el servidor…") que se cierra con "Cerrar". |
+| Una sola casa | Toda cuenta nueva entra a la casa "Apartamento", como en el Figma. Varias casas necesitarían invitaciones (ver `GUIA-SUPABASE.md`). |
+| Filas del perfil con interruptor | Ya no son botones desactivados: la fila es solo texto y se toca el interruptor. En la web, un lector de pantalla leía la fila como "desactivada". |
+| Revisión final contra el Figma | Se ajustaron cuatro detalles para que queden como en el Figma: en el registro, el botón va debajo de los campos; el aviso "Mood board guardado" lleva un check simple y texto verde; en el empate y en la decisión final las dos barras son verdes; en el desempate la opción elegida queda blanca con un check, y en las sugerencias queda rosada con un punto. |
+
 ---
 
 ## 11. Cómo se revisó
@@ -694,12 +729,28 @@ Así cuenta primero la categoría, después cuántos lo quieren y al final los c
 - **ESLint**, ahora también con la regla que revisa las dependencias de `useEffect`, y **la compilación para Android e iOS**: sin errores.
 - Ningún caso dejó errores ni advertencias en la consola.
 
+### Fase 5
+
+- **El SQL de Supabase** (`supabase/1` a `5`) se corrió en un Postgres 16 preparado como un proyecto nuevo de Supabase. Pasaron 25 pruebas de seguridad: por ejemplo, que Mateo no ve el borrador de Ana, que nadie vota a nombre de otro ni en una encuesta cerrada, que cada quien sube fotos solo a su carpeta y que sin iniciar sesión no se ve nada.
+- **La app en modo Supabase**, en el navegador, contra ese Postgres y un servidor de prueba que responde como la API de Supabase, con la librería real `supabase-js`. Pasaron 4 recorridos (24 revisiones directas en la base de datos):
+  1. Ana entra, ve las fotos desde Storage, busca sin tildes, vota y cierra una encuesta, desempata, sube una foto a un mood board nuevo, apaga las notificaciones, recarga sin perder la sesión y cierra sesión.
+  2. Registro de una cuenta nueva (contraseña corta, perfil creado por la base de datos, correo repetido).
+  3. Mateo cierra antes su encuesta y luego el desempate.
+  4. Dos personas al mismo tiempo: el voto de Mateo le llega a Ana en menos de 30 segundos.
+
+  Además se probó el mensaje que sale cuando no hay conexión.
+- **Con los datos de prueba**, el recorrido de 41 pasos y los 5 casos de la Fase 4 pasaron otra vez después de los cambios.
+- **Revisión final contra el Figma**: las 13 pantallas que faltaban por comparar (2, 3, 10b, 11b, 12, 13, 14, 17, 18, 19, 20, 21 y 25b), lado a lado con la app, además de las 10 de la Fase 3. Se corrigieron cuatro detalles (sección 10) y las diferencias que quedan a propósito están en `NOTAS-FIGMA.md`.
+- **ESLint**, la **compilación para Android e iOS** y la **exportación web** (que dibuja cada pantalla en el servidor): sin errores.
+
+![Comparación final: Figma a la izquierda de cada par, la app a la derecha](docs/imagenes/figma-vs-app.jpg)
+
 ---
 
 ## 12. Lo que sigue
 
-- **Fase 5: revisión final.**
-  - Repasar todas las pantallas contra el Figma una última vez.
-  - Explicar en esta guía cómo conectar una base de datos real (por ejemplo Supabase, como en la plantilla cafe-app): qué tablas crear a partir de `assets/Datos` y qué funciones cambian.
-  - Dejar la guía lista para entregar.
-- **Pendiente de ti:** fotos de camas, clósets y tocadores para llegar a unos 30 muebles.
+El proyecto quedó completo con las 5 fases. Lo que sigue depende del equipo:
+
+- **Conectar Supabase:** seguir [`GUIA-SUPABASE.md`](GUIA-SUPABASE.md). Toma entre 45 minutos y 1 hora.
+- **Antes de publicar en las tiendas:** la lista de "Antes de publicar la app" de `GUIA-SUPABASE.md` (confirmación por correo, recuperar contraseña, votos anónimos de verdad, cierre exacto de encuestas, varias casas, notificaciones).
+- **Más muebles:** el Figma tiene 21 fotos. Para llegar a unos 30 hacen falta fotos de camas, clósets y tocadores. Agregarlos se explica en `GUIA-SUPABASE.md`, "Cómo hacer cambios".
