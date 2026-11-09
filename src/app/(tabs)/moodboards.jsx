@@ -8,7 +8,7 @@ import EstadoVacio from "../../../assets/Components/EstadoVacio";
 import TarjetaMoodboard from "../../../assets/Components/TarjetaMoodboard";
 import { AppContexto } from "../../../assets/Contexto/AppContexto";
 import { describirVibra, primerNombre } from "../../../assets/Logica/textos";
-import { fuenteDeIdea } from "../../../assets/Servicios/muebles";
+import { fuenteDeIdea } from "../../../assets/Servicios/baseDeDatos";
 import { general, moodboards as estilos } from "../../../assets/Styles/Stylesheet";
 import { espacios, medidas } from "../../../assets/Styles/Tema";
 

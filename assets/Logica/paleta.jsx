@@ -1,6 +1,6 @@
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import { decode } from "jpeg-js";
-import { buscarMueble } from "../Servicios/muebles";
+import { buscarMueble } from "../Servicios/baseDeDatos";
 
 // "#D9653B" -> { r: 217, g: 101, b: 59 }
 function aRgb(hex) {

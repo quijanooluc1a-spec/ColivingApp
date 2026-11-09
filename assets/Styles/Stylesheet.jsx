@@ -596,6 +596,32 @@ const barraResultado = StyleSheet.create({
 });
 
 // Recuadro de mensaje (Aviso.jsx)
+// Mensaje arriba de la pantalla cuando falla algo al hablar con la base de datos
+const mensajeDeError = StyleSheet.create({
+  contenedor: {
+    position: "absolute",
+    left: espacios.normal,
+    right: espacios.normal,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: espacios.medio,
+    padding: espacios.medio,
+    borderRadius: bordes.normal,
+    borderWidth: 1,
+    borderColor: colores.borde,
+    backgroundColor: colores.amarilloSuave,
+  },
+  texto: {
+    flex: 1,
+    ...letras.etiqueta,
+    color: colores.texto,
+  },
+  cerrar: {
+    ...letras.etiqueta,
+    color: colores.principal,
+  },
+});
+
 const aviso = StyleSheet.create({
   contenedor: {
     flexDirection: "row",
@@ -1105,8 +1131,8 @@ const perfil = StyleSheet.create({
 });
 
 export {
-  aviso,
   avatar,
+  aviso,
   barraInferior,
   barraResultado,
   boton,
@@ -1127,6 +1153,7 @@ export {
   grilla,
   hoja,
   inicio,
+  mensajeDeError,
   moodboard,
   moodboards,
   nuevaEncuesta,

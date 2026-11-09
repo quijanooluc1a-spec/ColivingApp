@@ -21,7 +21,7 @@ import {
   textoAlCerrar,
   votoDe,
 } from "../../../assets/Logica/votacion";
-import { buscarMueble, enlaceTienda } from "../../../assets/Servicios/muebles";
+import { buscarMueble, enlaceTienda } from "../../../assets/Servicios/baseDeDatos";
 import { general, resultado } from "../../../assets/Styles/Stylesheet";
 
 // Pantallas 24, 25, 25b, 19 y 21 del Figma: una encuesta y su resultado.

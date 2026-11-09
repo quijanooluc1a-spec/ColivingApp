@@ -13,7 +13,7 @@ import TarjetaOpcion from "../../../assets/Components/TarjetaOpcion";
 import TarjetaTienda from "../../../assets/Components/TarjetaTienda";
 import { AppContexto } from "../../../assets/Contexto/AppContexto";
 import { formatearPrecio, textoIdeas } from "../../../assets/Logica/textos";
-import { buscarMueble, enlaceTienda, fuenteDeIdea } from "../../../assets/Servicios/muebles";
+import { buscarMueble, enlaceTienda, fuenteDeIdea } from "../../../assets/Servicios/baseDeDatos";
 import { detalle, general, hoja } from "../../../assets/Styles/Stylesheet";
 
 // Pantalla 9 del Figma: Detalle del mueble
@@ -51,22 +51,26 @@ function DetalleMueble() {
     WebBrowser.openBrowserAsync(enlaceTienda(mueble));
   }
 
-  function guardarEn(moodboard) {
-    agregarIdea(moodboard.id, { id_mueble: mueble.id });
+  async function guardarEn(moodboard) {
     setHojaAbierta(false);
-    setMensaje("Guardado en «" + moodboard.nombre + "»");
+    if (await agregarIdea(moodboard.id, { id_mueble: mueble.id })) {
+      setMensaje("Guardado en «" + moodboard.nombre + "»");
+    }
   }
 
-  function soloGuardar() {
-    guardarMueble(mueble.id);
+  async function soloGuardar() {
     setHojaAbierta(false);
-    setMensaje("Guardado en tus guardados");
+    if (await guardarMueble(mueble.id)) {
+      setMensaje("Guardado en tus guardados");
+    }
   }
 
-  function crearMoodboardConEste() {
-    guardarMueble(mueble.id);
+  async function crearMoodboardConEste() {
     setHojaAbierta(false);
-    router.push("/moodboard/nuevo?mueble=" + mueble.id);
+    // Primero se guarda, para que salga en la lista de ideas del mood board nuevo
+    if (await guardarMueble(mueble.id)) {
+      router.push("/moodboard/nuevo?mueble=" + mueble.id);
+    }
   }
 
   return (

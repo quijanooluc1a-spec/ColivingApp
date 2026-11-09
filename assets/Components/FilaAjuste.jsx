@@ -7,13 +7,24 @@ import { colores } from "../Styles/Tema";
 // Props: Icono (un ícono de Lucide, por ejemplo Folder), texto, alPresionar (función),
 //        derecha (lo que va a la derecha; si no se pasa, se muestra una flecha)
 function FilaAjuste({ Icono, texto, alPresionar, derecha }) {
-  return (
-    <TouchableOpacity style={filaAjuste.contenedor} onPress={alPresionar} disabled={!alPresionar} activeOpacity={0.7}>
+  const contenido = (
+    <>
       <View style={filaAjuste.icono}>
         <Icono color={colores.principal} size={20} />
       </View>
       <Text style={filaAjuste.texto}>{texto}</Text>
       {derecha ? derecha : <ChevronRight color={colores.textoSuave} size={20} />}
+    </>
+  );
+
+  // Sin alPresionar (por ejemplo, una fila con interruptor) la fila no se toca: se toca lo de la derecha
+  if (!alPresionar) {
+    return <View style={filaAjuste.contenedor}>{contenido}</View>;
+  }
+
+  return (
+    <TouchableOpacity style={filaAjuste.contenedor} onPress={alPresionar} activeOpacity={0.7}>
+      {contenido}
     </TouchableOpacity>
   );
 }

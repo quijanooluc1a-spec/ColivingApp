@@ -12,7 +12,7 @@ import Paleta from "../../../assets/Components/Paleta";
 import { AppContexto } from "../../../assets/Contexto/AppContexto";
 import { paletaDeIdeas, queCombina } from "../../../assets/Logica/paleta";
 import { primerNombre, textoIdeas } from "../../../assets/Logica/textos";
-import { fuenteDeIdea } from "../../../assets/Servicios/muebles";
+import { fuenteDeIdea } from "../../../assets/Servicios/baseDeDatos";
 import { general, moodboard as estilos } from "../../../assets/Styles/Stylesheet";
 import { colores, espacios, medidas } from "../../../assets/Styles/Tema";
 

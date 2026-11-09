@@ -37,7 +37,7 @@ function CompletarPerfil() {
     }
   }
 
-  function empezar() {
+  async function empezar() {
     if (nombre.trim() === "") {
       setError("Escribe tu nombre.");
       return;
@@ -46,7 +46,10 @@ function CompletarPerfil() {
       setError("Elige al menos una vibra.");
       return;
     }
-    completarPerfil(nombre, convive, misVibras);
+    const guardado = await completarPerfil(nombre, convive, misVibras);
+    if (!guardado) {
+      return; // no se pudo guardar: el mensaje sale arriba de la pantalla
+    }
     // Quita el registro de la pila y entra a las pestañas,
     // así el botón "atrás" ya no vuelve al registro
     router.dismissAll();

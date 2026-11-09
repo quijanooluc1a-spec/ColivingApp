@@ -7,6 +7,7 @@ import Boton from "../../assets/Components/Boton";
 import CampoTexto from "../../assets/Components/CampoTexto";
 import Encabezado from "../../assets/Components/Encabezado";
 import { AppContexto } from "../../assets/Contexto/AppContexto";
+import { MINIMO_CONTRASENA } from "../../assets/Servicios/baseDeDatos";
 import { general, inicio } from "../../assets/Styles/Stylesheet";
 
 // Pantalla 2 del Figma: Registro
@@ -16,6 +17,7 @@ function Registro() {
   const [correo, setCorreo] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState("");
+  const [enviando, setEnviando] = useState(false); // esperando la respuesta
 
   // Revisa los campos; devuelve el problema o "" si todo está bien
   function revisarCampos() {
@@ -25,17 +27,23 @@ function Registro() {
     if (!correo.includes("@") || !correo.includes(".")) {
       return "Escribe un correo válido, por ejemplo ana@email.com.";
     }
-    if (contrasena.length < 4) {
-      return "La contraseña debe tener al menos 4 caracteres.";
+    // 4 caracteres con los datos de prueba; 6 con Supabase (es lo que pide Supabase)
+    if (contrasena.length < MINIMO_CONTRASENA) {
+      return "La contraseña debe tener al menos " + MINIMO_CONTRASENA + " caracteres.";
     }
     return "";
   }
 
-  function crearCuenta() {
+  async function crearCuenta() {
     let problema = revisarCampos();
     if (problema === "") {
       // Los campos están bien: se crea la cuenta (puede fallar si el correo ya existe)
-      problema = registrarse(nombre, correo, contrasena);
+      setEnviando(true);
+      problema = await registrarse(nombre, correo, contrasena);
+      setEnviando(false);
+    }
+    if (problema === null) {
+      return; // no hubo conexión: el mensaje sale arriba de la pantalla
     }
     setError(problema);
     if (problema === "") {
@@ -64,7 +72,7 @@ function Registro() {
       </ScrollView>
 
       <View style={general.acciones}>
-        <Boton texto="Crear cuenta" alPresionar={crearCuenta} />
+        <Boton texto={enviando ? "Creando cuenta…" : "Crear cuenta"} alPresionar={crearCuenta} deshabilitado={enviando} />
         <View style={inicio.enlace}>
           <Text style={general.textoSuave}>¿Ya tienes cuenta?</Text>
           <TouchableOpacity onPress={volverAlInicio}>

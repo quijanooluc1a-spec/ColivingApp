@@ -9,7 +9,7 @@ import TarjetaOpcion from "../../../assets/Components/TarjetaOpcion";
 import { AppContexto } from "../../../assets/Contexto/AppContexto";
 import { tiempoRestante } from "../../../assets/Logica/textos";
 import { contarVotos, votoDe } from "../../../assets/Logica/votacion";
-import { buscarMueble } from "../../../assets/Servicios/muebles";
+import { buscarMueble } from "../../../assets/Servicios/baseDeDatos";
 import { general } from "../../../assets/Styles/Stylesheet";
 
 // Pantalla 20 del Figma: Votación de desempate.
@@ -18,6 +18,7 @@ function Desempate() {
   const { id } = useLocalSearchParams();
   const { usuario, roommates, encuestas, votos, votar } = useContext(AppContexto);
   const [opcion, setOpcion] = useState(null); // "si", "no" o null
+  const [enviando, setEnviando] = useState(false); // esperando la respuesta
 
   if (!usuario) {
     return null;
@@ -56,8 +57,9 @@ function Desempate() {
 
   // Guarda el voto y vuelve al resultado. Si con este voto ya votaron todos, el desempate se cierra
   // y la pantalla de resultado muestra la decisión.
-  function enviarVoto() {
-    votar(encuesta.id, elegida);
+  async function enviarVoto() {
+    setEnviando(true);
+    await votar(encuesta.id, elegida);
     router.back();
   }
 
@@ -92,7 +94,11 @@ function Desempate() {
         </Text>
       </ScrollView>
       <View style={general.acciones}>
-        <Boton texto="Enviar voto de desempate" alPresionar={enviarVoto} deshabilitado={!elegida} />
+        <Boton
+          texto={enviando ? "Enviando…" : "Enviar voto de desempate"}
+          alPresionar={enviarVoto}
+          deshabilitado={!elegida || enviando}
+        />
         <Boton texto="Cancelar" tipo="secundario" alPresionar={volver} />
       </View>
     </SafeAreaView>

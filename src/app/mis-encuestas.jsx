@@ -7,7 +7,7 @@ import EstadoVacio from "../../assets/Components/EstadoVacio";
 import TarjetaOpcion from "../../assets/Components/TarjetaOpcion";
 import { AppContexto } from "../../assets/Contexto/AppContexto";
 import { resumenEncuesta } from "../../assets/Logica/votacion";
-import { buscarMueble } from "../../assets/Servicios/muebles";
+import { buscarMueble } from "../../assets/Servicios/baseDeDatos";
 import { general } from "../../assets/Styles/Stylesheet";
 
 // Pantalla nueva (no está en el Figma): las encuestas que creé, con su estado

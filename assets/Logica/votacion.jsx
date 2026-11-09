@@ -1,4 +1,4 @@
-import { buscarMueble } from "../Servicios/muebles";
+import { buscarMueble } from "../Servicios/baseDeDatos";
 import { coloresParecidos, paletaDeIdeas } from "./paleta";
 import { primerNombre, tiempoRestante } from "./textos";
 

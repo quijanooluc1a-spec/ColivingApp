@@ -11,7 +11,7 @@ import EstadoVacio from "../../../assets/Components/EstadoVacio";
 import TarjetaOpcion from "../../../assets/Components/TarjetaOpcion";
 import { AppContexto } from "../../../assets/Contexto/AppContexto";
 import { duraciones, textosDeVoto } from "../../../assets/Datos/opciones";
-import { buscarMueble } from "../../../assets/Servicios/muebles";
+import { buscarMueble } from "../../../assets/Servicios/baseDeDatos";
 import { general, nuevaEncuesta } from "../../../assets/Styles/Stylesheet";
 import { colores } from "../../../assets/Styles/Tema";
 
@@ -25,6 +25,7 @@ function NuevaEncuesta() {
   const [textoNo, setTextoNo] = useState(textosDeVoto[0].no);
   const [horas, setHoras] = useState(24);
   const [error, setError] = useState("");
+  const [enviando, setEnviando] = useState(false); // esperando la respuesta
 
   if (!usuario) {
     return null;
@@ -46,12 +47,17 @@ function NuevaEncuesta() {
     );
   }
 
-  function publicar() {
+  async function publicar() {
     if (pregunta.trim() === "" || textoSi.trim() === "" || textoNo.trim() === "") {
       setError("Escribe la pregunta y los textos de los dos botones.");
       return;
     }
-    crearEncuesta(mueble.id, idMoodboard, pregunta, textoSi, textoNo, horas);
+    setEnviando(true);
+    const idNueva = await crearEncuesta(mueble.id, idMoodboard, pregunta, textoSi, textoNo, horas);
+    setEnviando(false);
+    if (!idNueva) {
+      return; // no se pudo crear: el mensaje sale arriba de la pantalla
+    }
     // dismissTo: cierra las pantallas de encima hasta llegar a la pestaña Encuestas
     router.dismissTo("/encuestas");
   }
@@ -117,7 +123,7 @@ function NuevaEncuesta() {
       </ScrollView>
 
       <View style={general.acciones}>
-        <Boton texto="Publicar encuesta" alPresionar={publicar} />
+        <Boton texto={enviando ? "Publicando…" : "Publicar encuesta"} alPresionar={publicar} deshabilitado={enviando} />
       </View>
     </SafeAreaView>
   );

@@ -11,7 +11,7 @@ import TarjetaOpcion from "../../../assets/Components/TarjetaOpcion";
 import { AppContexto } from "../../../assets/Contexto/AppContexto";
 import { primerNombre } from "../../../assets/Logica/textos";
 import { contarVotos, resumenEncuesta, votoDe } from "../../../assets/Logica/votacion";
-import { buscarMueble } from "../../../assets/Servicios/muebles";
+import { buscarMueble } from "../../../assets/Servicios/baseDeDatos";
 import { encuestas as estilos, general } from "../../../assets/Styles/Stylesheet";
 
 // Pantalla 22 del Figma: las encuestas activas, para votar desde la lista.
@@ -50,9 +50,9 @@ function Encuestas() {
   }
 
   // Vota desde la lista. Si con ese voto ya votaron todos, la encuesta se cierra y se abre su resultado.
-  function votarDesdeLaLista(encuesta, valor) {
-    const estado = votar(encuesta.id, valor);
-    if (estado !== "activa") {
+  async function votarDesdeLaLista(encuesta, valor) {
+    const estado = await votar(encuesta.id, valor);
+    if (estado && estado !== "activa") {
       abrir(encuesta);
     }
   }

@@ -48,8 +48,8 @@ function Perfil() {
     );
   }
 
-  function salir() {
-    cerrarSesion();
+  async function salir() {
+    await cerrarSesion();
     router.replace("/");
   }
 

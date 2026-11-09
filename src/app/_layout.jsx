@@ -8,27 +8,38 @@ import { router, Stack, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useContext, useEffect } from "react";
 import { View } from "react-native";
+import MensajeDeError from "../../assets/Components/MensajeDeError";
 import { AppContexto, ProveedorApp } from "../../assets/Contexto/AppContexto";
 import { general } from "../../assets/Styles/Stylesheet";
 import { colores } from "../../assets/Styles/Tema";
 
 // Si nadie ha iniciado sesión y se abre una pantalla de adentro
-// (por ejemplo al recargar la página web), vuelve al inicio de sesión
+// (por ejemplo al recargar la página web), vuelve al inicio de sesión.
+// Espera a "listo": primero hay que revisar si quedó una sesión guardada.
 function Guardian() {
-  const { usuario } = useContext(AppContexto);
+  const { listo, usuario } = useContext(AppContexto);
   const segmentos = useSegments();
 
   useEffect(
     function () {
       const enInicio = segmentos.length === 0 || segmentos[0] === "index" || segmentos[0] === "registro";
-      if (usuario === null && !enInicio) {
+      if (listo && usuario === null && !enInicio) {
         router.replace("/");
       }
     },
-    [usuario, segmentos]
+    [listo, usuario, segmentos]
   );
 
   return null;
+}
+
+// Muestra el último problema al hablar con la base de datos, si lo hay
+function ErrorDeConexion() {
+  const { error, borrarError } = useContext(AppContexto);
+  if (error === "") {
+    return null;
+  }
+  return <MensajeDeError texto={error} alCerrar={borrarError} />;
 }
 
 function RootLayout() {
@@ -61,6 +72,7 @@ function RootLayout() {
               contentStyle: { backgroundColor: colores.fondo },
             }}
           />
+          <ErrorDeConexion />
         </View>
       </View>
 

@@ -8,7 +8,7 @@ import Encabezado from "../../../assets/Components/Encabezado";
 import EstadoVacio from "../../../assets/Components/EstadoVacio";
 import { AppContexto } from "../../../assets/Contexto/AppContexto";
 import { estaAbierta } from "../../../assets/Logica/votacion";
-import { buscarMueble } from "../../../assets/Servicios/muebles";
+import { buscarMueble } from "../../../assets/Servicios/baseDeDatos";
 import { elegir, general } from "../../../assets/Styles/Stylesheet";
 import { colores, espacios, medidas } from "../../../assets/Styles/Tema";
 

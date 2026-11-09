@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, View } from "react-native";
-import { obtenerCategorias, obtenerMuebles, TAMANO_PAGINA } from "../Servicios/muebles";
+import { obtenerCategorias, obtenerMuebles, TAMANO_PAGINA } from "../Servicios/baseDeDatos";
 import { catalogo, general } from "../Styles/Stylesheet";
 import { colores } from "../Styles/Tema";
 import Aviso from "./Aviso";

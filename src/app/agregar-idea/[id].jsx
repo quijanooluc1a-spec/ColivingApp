@@ -30,8 +30,11 @@ function AgregarIdea() {
     : [];
 
   // Agrega el mueble y vuelve al mood board, que muestra "Idea agregada" y la etiqueta "Nueva"
-  function agregar(mueble) {
-    const idIdea = agregarIdea(id, { id_mueble: mueble.id });
+  async function agregar(mueble) {
+    const idIdea = await agregarIdea(id, { id_mueble: mueble.id });
+    if (!idIdea) {
+      return; // no se pudo agregar: el mensaje sale arriba de la pantalla
+    }
     router.dismissTo("/moodboard/" + id + "?aviso=idea&nueva=" + idIdea);
   }
 

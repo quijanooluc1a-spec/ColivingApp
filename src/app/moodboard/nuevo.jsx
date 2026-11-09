@@ -13,7 +13,7 @@ import Paleta from "../../../assets/Components/Paleta";
 import { AppContexto } from "../../../assets/Contexto/AppContexto";
 import { vibras } from "../../../assets/Datos/opciones";
 import { coloresDeFoto, paletaDeIdeas } from "../../../assets/Logica/paleta";
-import { buscarMueble } from "../../../assets/Servicios/muebles";
+import { buscarMueble } from "../../../assets/Servicios/baseDeDatos";
 import { general, nuevoMoodboard } from "../../../assets/Styles/Stylesheet";
 import { colores } from "../../../assets/Styles/Tema";
 
@@ -28,7 +28,8 @@ function NuevoMoodboard() {
   const [elegidos, setElegidos] = useState(mueble ? [mueble] : []); // claves de las ideas elegidas
   const [fotos, setFotos] = useState([]); // fotos del carrete: { clave, foto, colores }
   const [misVibras, setMisVibras] = useState([]);
-  const [subiendo, setSubiendo] = useState(false);
+  const [subiendo, setSubiendo] = useState(false); // leyendo los colores de las fotos
+  const [guardando, setGuardando] = useState(false); // esperando a que se guarde (y se suban las fotos)
   const [error, setError] = useState("");
 
   if (!usuario) {
@@ -118,7 +119,7 @@ function NuevoMoodboard() {
     setSubiendo(false);
   }
 
-  function guardar() {
+  async function guardar() {
     if (nombre.trim() === "") {
       setError("Ponle un nombre al mood board.");
       return;
@@ -128,7 +129,12 @@ function NuevoMoodboard() {
       return;
     }
     const compartido = ideasElegidas.length >= MINIMO_IDEAS;
-    const id = crearMoodboard(nombre, ideasElegidas, misVibras, compartido);
+    setGuardando(true);
+    const id = await crearMoodboard(nombre, ideasElegidas, misVibras, compartido);
+    setGuardando(false);
+    if (!id) {
+      return; // no se pudo guardar: el mensaje sale arriba de la pantalla
+    }
     // replace: al volver desde el mood board nuevo se llega a la lista, no a este formulario
     router.replace("/moodboard/" + id + "?aviso=guardado");
   }
@@ -219,7 +225,11 @@ function NuevoMoodboard() {
       </ScrollView>
 
       <View style={general.acciones}>
-        <Boton texto="Guardar moodboard" alPresionar={guardar} deshabilitado={subiendo} />
+        <Boton
+          texto={guardando ? "Guardando…" : "Guardar moodboard"}
+          alPresionar={guardar}
+          deshabilitado={subiendo || guardando}
+        />
       </View>
     </SafeAreaView>
   );
