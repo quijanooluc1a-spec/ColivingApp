@@ -14,7 +14,8 @@ import { contarVotos, resumenEncuesta, votoDe } from "../../../assets/Logica/vot
 import { buscarMueble } from "../../../assets/Servicios/muebles";
 import { encuestas as estilos, general } from "../../../assets/Styles/Stylesheet";
 
-// Pantalla 22 del Figma: todas las encuestas activas, para votar desde la lista
+// Pantalla 22 del Figma: las encuestas activas, para votar desde la lista.
+// Debajo (no está en el Figma): las que están en desempate y las que ya terminaron.
 function Encuestas() {
   const { usuario, usuarios, roommates, casa, encuestas, votos, votar } = useContext(AppContexto);
 
@@ -25,9 +26,17 @@ function Encuestas() {
   const activas = encuestas.filter(function (e) {
     return e.estado === "activa";
   });
-  const terminadas = encuestas.filter(function (e) {
-    return e.estado !== "activa";
+  const enDesempate = encuestas.filter(function (e) {
+    return e.estado === "empate";
   });
+  // Las terminadas, de la que se cerró más recientemente a la más antigua
+  const terminadas = encuestas
+    .filter(function (e) {
+      return e.estado === "aprobada" || e.estado === "rechazada";
+    })
+    .sort(function (a, b) {
+      return b.cierra - a.cierra;
+    });
 
   function nombreDe(idUsuario) {
     const persona = usuarios.find(function (u) {
@@ -38,6 +47,14 @@ function Encuestas() {
 
   function abrir(encuesta) {
     router.push("/encuesta/" + encuesta.id);
+  }
+
+  // Vota desde la lista. Si con ese voto ya votaron todos, la encuesta se cierra y se abre su resultado.
+  function votarDesdeLaLista(encuesta, valor) {
+    const estado = votar(encuesta.id, valor);
+    if (estado !== "activa") {
+      abrir(encuesta);
+    }
   }
 
   // Para crear una encuesta hay que elegir un objeto de un mood board,
@@ -77,7 +94,7 @@ function Encuestas() {
                 conteo={contarVotos(votos, encuesta.id, encuesta.ronda)}
                 miVoto={votoDe(votos, encuesta.id, usuario.id, encuesta.ronda)}
                 alVotar={function (valor) {
-                  votar(encuesta.id, valor);
+                  votarDesdeLaLista(encuesta, valor);
                 }}
                 alAbrir={function () {
                   abrir(encuesta);
@@ -86,6 +103,29 @@ function Encuestas() {
             );
           })}
         </View>
+
+        {/* No está en el Figma: las encuestas empatadas que esperan el voto de desempate */}
+        {enDesempate.length > 0 ? (
+          <View style={estilos.lista}>
+            <Text style={general.subtitulo}>Por desempatar</Text>
+            {enDesempate.map(function (encuesta) {
+              const mueble = buscarMueble(encuesta.id_mueble);
+              const yaVote = votoDe(votos, encuesta.id, usuario.id, encuesta.ronda) !== null;
+              return (
+                <TarjetaOpcion
+                  key={encuesta.id}
+                  foto={mueble.imagen}
+                  titulo={mueble.nombre}
+                  subtitulo={resumenEncuesta(encuesta, votos) + (yaVote ? " · ya votaste" : " · falta tu voto")}
+                  tamanoFoto={56}
+                  alPresionar={function () {
+                    abrir(encuesta);
+                  }}
+                />
+              );
+            })}
+          </View>
+        ) : null}
 
         {/* No está en el Figma: las encuestas que ya cerraron, para ver su resultado */}
         {terminadas.length > 0 ? (

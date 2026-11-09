@@ -19,6 +19,9 @@ function aHex(r, g, b) {
   return ("#" + partes.join("")).toUpperCase();
 }
 
+// Dos colores son "parecidos" si su distancia es menor que esto
+const PARECIDO = 60;
+
 // Qué tan distintos son dos colores (0 = iguales)
 function distancia(color1, color2) {
   const a = aRgb(color1);
@@ -45,13 +48,23 @@ function escogerColores(lista) {
   const elegidos = [];
   lista.forEach(function (color) {
     const parecido = elegidos.some(function (otro) {
-      return distancia(color, otro) < 60;
+      return distancia(color, otro) < PARECIDO;
     });
     if (!parecido && elegidos.length < 5) {
       elegidos.push(color);
     }
   });
   return elegidos;
+}
+
+// Cuántos de estos colores se parecen a alguno de la paleta.
+// Sirve para saber si un mueble combina con un mood board (se usa en las sugerencias).
+function coloresParecidos(colores, paleta) {
+  return colores.filter(function (color) {
+    return paleta.some(function (otro) {
+      return distancia(color, otro) < PARECIDO;
+    });
+  }).length;
 }
 
 // Los colores de una idea: los del mueble, o los que se sacaron de la foto del carrete
@@ -146,4 +159,4 @@ function queCombina(colores) {
   };
 }
 
-export { coloresDeFoto, paletaDeIdeas, queCombina };
+export { coloresDeFoto, coloresParecidos, paletaDeIdeas, queCombina };

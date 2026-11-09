@@ -1,8 +1,10 @@
 // Las encuestas de prueba: hay una de cada estado que muestra el Figma.
 // En una base de datos sería la tabla "encuestas".
-// - estado: "activa", "aprobada", "rechazada" o "empate".
-// - ronda: 1 es la votación normal; 2 es la ronda de desempate.
+// - estado: "activa" (ronda 1 abierta), "empate" (desempate abierto), "aprobada" o "rechazada".
+// - ronda: la ronda que se está votando, o en la que se decidió. 1 es la votación normal; 2 es el desempate.
 // - creada y cierra: fecha y hora en milisegundos (como lo da Date.now()).
+//   "cierra" es cuándo se cierra la ronda abierta, o cuándo se cerró la encuesta si ya terminó.
+// Las reglas para cerrar y contar están en Logica/votacion.jsx.
 
 const AHORA = Date.now();
 const HORA = 60 * 60 * 1000;
@@ -82,10 +84,11 @@ const encuestas = [
     pregunta: "¿Lo ponemos en la sala?",
     texto_si: "Sí, ponerlo",
     texto_no: "No ponerlo",
-    creada: AHORA - 3 * DIA,
-    cierra: AHORA - 2 * DIA,
+    // La ronda 1 duró 48 h y terminó 1 – 1 hace 4 horas; el desempate (24 h) cierra en 20 horas
+    creada: AHORA - 52 * HORA,
+    cierra: AHORA + 20 * HORA,
     estado: "empate",
-    ronda: 1,
+    ronda: 2,
   },
   {
     id: "e7",

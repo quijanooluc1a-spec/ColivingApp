@@ -7,6 +7,7 @@ import Boton from "../../../assets/Components/Boton";
 import Encabezado from "../../../assets/Components/Encabezado";
 import EstadoVacio from "../../../assets/Components/EstadoVacio";
 import { AppContexto } from "../../../assets/Contexto/AppContexto";
+import { estaAbierta } from "../../../assets/Logica/votacion";
 import { buscarMueble } from "../../../assets/Servicios/muebles";
 import { elegir, general } from "../../../assets/Styles/Stylesheet";
 import { colores, espacios, medidas } from "../../../assets/Styles/Tema";
@@ -38,11 +39,16 @@ function ElegirObjeto() {
       return buscarMueble(idea.id_mueble);
     });
 
-  // Un mueble que ya tiene una encuesta activa no se puede volver a poner a votación
-  function estaEnVotacion(idMueble) {
-    return encuestas.some(function (e) {
-      return e.id_mueble === idMueble && e.estado === "activa";
+  // Un mueble que ya está en votación (o en desempate) o que ya se aprobó no se puede volver a poner a votación.
+  // Devuelve por qué no se puede, o null si sí se puede.
+  function motivoBloqueo(idMueble) {
+    const encuesta = encuestas.find(function (e) {
+      return e.id_mueble === idMueble && (estaAbierta(e) || e.estado === "aprobada");
     });
+    if (!encuesta) {
+      return null;
+    }
+    return encuesta.estado === "aprobada" ? "Ya se aprobó" : "Ya está en votación";
   }
 
   const anchoTarjeta = (anchoPantalla - espacios.normal * 2 - 14) / 2;
@@ -70,7 +76,7 @@ function ElegirObjeto() {
 
         <View style={elegir.grilla}>
           {muebles.map(function (mueble) {
-            const enVotacion = estaEnVotacion(mueble.id);
+            const bloqueo = motivoBloqueo(mueble.id);
             const esElegido = elegido === mueble.id;
             return (
               <TouchableOpacity
@@ -79,14 +85,14 @@ function ElegirObjeto() {
                 onPress={function () {
                   setElegido(mueble.id);
                 }}
-                disabled={enVotacion}
+                disabled={bloqueo !== null}
                 activeOpacity={0.8}
-                accessibilityState={{ selected: esElegido, disabled: enVotacion }}
+                accessibilityState={{ selected: esElegido, disabled: bloqueo !== null }}
               >
                 <Image source={mueble.imagen} style={elegir.foto} resizeMode="cover" />
                 <View style={elegir.info}>
                   <Text style={elegir.nombre}>{mueble.nombre}</Text>
-                  {enVotacion ? <Text style={general.textoPequeno}>Ya está en votación</Text> : null}
+                  {bloqueo ? <Text style={general.textoPequeno}>{bloqueo}</Text> : null}
                 </View>
                 {esElegido ? (
                   <View style={elegir.marca}>

@@ -18,9 +18,12 @@ const votos = [
   { id: "v9", id_encuesta: "e5", id_usuario: "u1", ronda: 1, valor: "no" },
   { id: "v10", id_encuesta: "e5", id_usuario: "u2", ronda: 1, valor: "no" },
   { id: "v11", id_encuesta: "e5", id_usuario: "u3", ronda: 1, valor: "si" },
-  // e6 · Love seat azul (empate 1 – 1; Valentina no alcanzó a votar)
+  // e6 · Love seat azul: la ronda 1 terminó 1 – 1 (Valentina no alcanzó a votar).
+  // En el desempate van 1 – 1 y falta Ana: su voto decide.
   { id: "v12", id_encuesta: "e6", id_usuario: "u1", ronda: 1, valor: "si" },
   { id: "v13", id_encuesta: "e6", id_usuario: "u2", ronda: 1, valor: "no" },
+  { id: "v19", id_encuesta: "e6", id_usuario: "u2", ronda: 2, valor: "no" },
+  { id: "v20", id_encuesta: "e6", id_usuario: "u3", ronda: 2, valor: "si" },
   // e7 · Planta monstera: empate 1 – 1 en la ronda 1 y desempate 2 – 1 en la ronda 2
   { id: "v14", id_encuesta: "e7", id_usuario: "u1", ronda: 1, valor: "si" },
   { id: "v15", id_encuesta: "e7", id_usuario: "u3", ronda: 1, valor: "no" },

@@ -1,9 +1,13 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import casa from "../Datos/casa";
 import encuestasDePrueba from "../Datos/encuestas";
 import moodboardsDePrueba from "../Datos/moodboards";
 import usuariosDePrueba from "../Datos/usuarios";
 import votosDePrueba from "../Datos/votos";
+import { cerrarRonda, debeCerrarse, estaAbierta } from "../Logica/votacion";
+
+// Cada cuánto se revisa si a alguna encuesta se le acabó el tiempo
+const REVISAR_CADA = 30 * 1000; // 30 segundos
 
 // Una "caja" con los datos que comparten todas las pantallas.
 // Cualquier pantalla la usa así:
@@ -156,6 +160,41 @@ function ProveedorApp({ children }) {
   }
 
   // ---------- Encuestas y votos ----------
+  // Las reglas (cuándo se cierra una ronda y quién gana) están en Logica/votacion.jsx
+
+  // Cambia una encuesta de la lista por su versión nueva
+  function actualizarEncuesta(cambiada) {
+    setEncuestas(function (lista) {
+      return lista.map(function (e) {
+        return e.id === cambiada.id ? cambiada : e;
+      });
+    });
+  }
+
+  // Cada 30 segundos revisa si a alguna encuesta se le acabó el tiempo, y si es así la cierra.
+  // Se vuelve a programar cuando cambian los votos o los roommates, para usar los datos nuevos.
+  useEffect(
+    function () {
+      const reloj = setInterval(function () {
+        const ahora = Date.now();
+        setEncuestas(function (lista) {
+          const hayQueCerrar = lista.some(function (e) {
+            return debeCerrarse(e, votos, roommates.length, ahora);
+          });
+          if (!hayQueCerrar) {
+            return lista; // nada cambió: la pantalla no se vuelve a dibujar
+          }
+          return lista.map(function (e) {
+            return debeCerrarse(e, votos, roommates.length, ahora) ? cerrarRonda(e, votos, ahora) : e;
+          });
+        });
+      }, REVISAR_CADA);
+      return function () {
+        clearInterval(reloj);
+      };
+    },
+    [votos, roommates.length]
+  );
 
   // Crea una encuesta activa que cierra en "horas" horas. Devuelve su id
   function crearEncuesta(idMueble, idMoodboard, pregunta, textoSi, textoNo, horas) {
@@ -176,24 +215,51 @@ function ProveedorApp({ children }) {
     return nueva.id;
   }
 
-  // Guarda el voto de la persona ("si" o "no"). Si ya había votado en esa ronda, cambia su voto.
-  // ronda: 1 es la votación normal y 2 el desempate (si no se dice, es la ronda actual de la encuesta).
-  function votar(idEncuesta, valor, ronda) {
+  // Guarda el voto de la persona ("si" o "no") en la ronda abierta (1, o 2 si es el desempate).
+  // Si ya había votado en esa ronda, cambia su voto.
+  // Si con este voto ya votaron todos, la ronda se cierra en ese momento.
+  // Devuelve el estado de la encuesta después de votar ("activa", "empate", "aprobada" o "rechazada").
+  function votar(idEncuesta, valor) {
     const encuesta = encuestas.find(function (e) {
       return e.id === idEncuesta;
     });
-    const rondaDelVoto = ronda || encuesta.ronda;
+    if (!estaAbierta(encuesta)) {
+      return encuesta.estado; // ya se cerró: no se puede votar
+    }
     const sinMiVoto = votos.filter(function (v) {
-      return !(v.id_encuesta === idEncuesta && v.id_usuario === usuario.id && v.ronda === rondaDelVoto);
+      return !(v.id_encuesta === idEncuesta && v.id_usuario === usuario.id && v.ronda === encuesta.ronda);
     });
     const nuevo = {
       id: crearId("v"),
       id_encuesta: idEncuesta,
       id_usuario: usuario.id,
-      ronda: rondaDelVoto,
+      ronda: encuesta.ronda,
       valor: valor,
     };
-    setVotos(sinMiVoto.concat(nuevo));
+    const votosNuevos = sinMiVoto.concat(nuevo);
+    setVotos(votosNuevos);
+
+    const ahora = Date.now();
+    if (debeCerrarse(encuesta, votosNuevos, roommates.length, ahora)) {
+      const cerrada = cerrarRonda(encuesta, votosNuevos, ahora);
+      actualizarEncuesta(cerrada);
+      return cerrada.estado;
+    }
+    return encuesta.estado;
+  }
+
+  // Quien creó la encuesta la puede cerrar antes de tiempo: se cuentan los votos que hay.
+  // Devuelve el estado nuevo (si queda empate en la ronda 1, empieza el desempate).
+  function cerrarEncuesta(idEncuesta) {
+    const encuesta = encuestas.find(function (e) {
+      return e.id === idEncuesta;
+    });
+    if (!estaAbierta(encuesta) || encuesta.id_creador !== usuario.id) {
+      return encuesta.estado;
+    }
+    const cerrada = cerrarRonda(encuesta, votos, Date.now());
+    actualizarEncuesta(cerrada);
+    return cerrada.estado;
   }
 
   const valor = {
@@ -215,6 +281,7 @@ function ProveedorApp({ children }) {
     agregarIdea: agregarIdea,
     crearEncuesta: crearEncuesta,
     votar: votar,
+    cerrarEncuesta: cerrarEncuesta,
   };
 
   return <AppContexto.Provider value={valor}>{children}</AppContexto.Provider>;

@@ -2,9 +2,9 @@
 
 App para que los roommates de una casa decidan juntos cómo decorar: descubren muebles, arman mood boards y votan qué entra al espacio común.
 
-> **Estado: Fase 3 terminada.** Todas las pantallas están hechas y usan datos de prueba.
-> Ya se puede usar la app completa: iniciar sesión, explorar muebles, armar mood boards, crear encuestas y votar.
-> Falta la Fase 4: que las encuestas se cierren y se decidan solas, que el desempate termine la votación y que las sugerencias también comparen colores (ver la sección 11).
+> **Estado: Fase 4 terminada.** La app está completa y usa datos de prueba.
+> Se puede iniciar sesión, explorar muebles, armar mood boards, crear encuestas y votar. Las encuestas se cierran solas (cuando votan todos o cuando se acaba el tiempo), se cuentan, se desempatan y, si un mueble no gana, la app sugiere otros (sección 9).
+> Falta la Fase 5: revisión final y cómo conectar una base de datos real (sección 12).
 > Esta guía se completa en cada fase.
 
 ---
@@ -16,7 +16,7 @@ App para que los roommates de una casa decidan juntos cómo decorar: descubren m
 | `GUIA.md` | Esta guía: cómo ejecutar y probar la app, carpetas, colores, navegación, datos, componentes y decisiones |
 | `FASE-1-propuesta.md` | Propuesta aprobada en la Fase 1: pantallas, navegación, componentes y modelo de datos |
 | `NOTAS-FIGMA.md` | Código de cada pantalla y foto del Figma, títulos y botones de cada pantalla, y qué foto usa cada mueble |
-| `docs/imagenes/` | Imágenes para la documentación: colores del Figma y pantallas de las fases 2 y 3 |
+| `docs/imagenes/` | Imágenes para la documentación: colores del Figma y pantallas de las fases 2, 3 y 4 |
 
 El historial de las conversaciones con Claude no está en el repositorio, porque el repositorio es público. Se entregó como un archivo aparte.
 
@@ -112,12 +112,27 @@ Los datos viven mientras la app está abierta. Si recargas la página o cierras 
 3. **Detalle:** toca un mueble y revisa medidas y materiales. Toca **Guardar en moodboard** y elige "Mi cuarto". **Comprar** abre la búsqueda de ese mueble en Homecenter.
 4. **Mood boards:** abre "Sala acogedora", toca **Agregar idea** y luego el **+** de un mueble. Vuelves al mood board con el aviso "Idea agregada" y la foto marcada como "Nueva".
 5. **Poner a votación:** elige el mueble nuevo, cambia los textos de los botones (por ejemplo, "Sí, pongámoslo / No, busquemos otro"), elige la duración y toca **Publicar encuesta**.
-6. **Encuestas:** vota en la "Lámpara de arco". Los números cambian al momento y tu voto queda relleno; lo puedes cambiar.
-7. **Terminadas** (más abajo en Encuestas): abre "Mesa de comedor" (ganó el sí), "Lámpara de pie" (no ganó y muestra sugerencias), "Love seat azul" (empate y desempate) y "Planta monstera" (decisión final).
+6. **Encuestas:** vota en la "Silla de comedor". Los números cambian al momento y tu voto queda relleno; lo puedes cambiar mientras la encuesta siga abierta.
+7. **Terminadas** (más abajo en Encuestas): abre "Mesa de comedor" (ganó el sí), "Lámpara de pie" (no ganó y muestra sugerencias) y "Planta monstera" (decisión final después de un desempate).
+   Para probar el cierre de las encuestas y el desempate, sigue los casos de "Probar la votación", más abajo.
 8. **Perfil:** toca Guardados, Votos y Moodboards, prueba los interruptores de notificaciones y cierra sesión.
 9. **Nuevo mood board:** en Mood boards toca **+ Nuevo**, elige 4 ideas o más y sube una foto con **+ Fotos**: la paleta toma colores de esa foto. Con menos de 4 ideas se guarda como borrador.
 
+### Probar la votación
+
+Cada caso empieza con los datos de prueba limpios: recarga la página antes de empezar.
+
+| Caso | Cuenta | Qué hacer | Qué debe pasar |
+|---|---|---|---|
+| Se cierra cuando votan todos | Ana | En Encuestas, vota en la "Lámpara de arco" (va 1 – 1 y solo falta Ana) | La encuesta se cierra con tu voto y se abre su resultado. En la lista pasa a Terminadas, de primera |
+| El desempate decide que sí | Ana | En "Por desempatar", abre "Love seat azul" → **Desempatar de forma anónima** → "Sí, ponerlo" → **Enviar voto de desempate** | El desempate iba 1 – 1 y faltaba Ana: termina 2 – 1 y aparece la **Decisión final** |
+| El desempate decide que no | Ana | Lo mismo, pero elige "No ponerlo" | Termina 1 – 2: "Ganó el «No» en el desempate" y 3 sugerencias de los mood boards |
+| Quien la creó la cierra antes | Mateo | Abre la "Lámpara de arco" con su botón **Encuesta** → **Cerrar la encuesta ahora** → **Sí, cerrar ahora** | Antes de cerrar te dice qué va a pasar. Con 1 – 1 queda empate y empieza el desempate, que Mateo también puede cerrar antes |
+| Se acaba el tiempo | Cualquiera | Mira "cierra en …" en una encuesta activa | Cuando el tiempo llega a cero, la app la cierra sola (revisa cada 30 segundos). Si falta menos de una hora, dice los minutos |
+
 ### Las pantallas
+
+![Pantallas de la Fase 4: votación, desempate y cierre de encuestas](docs/imagenes/pantallas-fase-4.jpg)
 
 ![Pantallas de la Fase 3: inicio, explorar, mood boards y perfil](docs/imagenes/pantallas-fase-3-moodboards.jpg)
 
@@ -138,11 +153,11 @@ ColivingApp/
 │   │   └── explorar.jsx, encuestas.jsx, moodboards.jsx, perfil.jsx
 │   └── ...                  ← el resto de pantallas (ver la sección 5)
 ├── assets/
-│   ├── Components/          ← los 21 componentes reutilizables, uno por archivo (sección 7)
+│   ├── Components/          ← los 22 componentes reutilizables, uno por archivo (sección 7)
 │   ├── Contexto/
 │   │   └── AppContexto.jsx  ← los datos que comparten todas las pantallas (sección 6)
 │   ├── Datos/               ← datos de prueba: casa, usuarios, muebles, mood boards, encuestas y votos
-│   ├── Logica/              ← funciones de textos, paleta de colores y votación (sección 8)
+│   ├── Logica/              ← funciones de textos, paleta de colores y reglas de votación (secciones 8 y 9)
 │   ├── Servicios/
 │   │   └── muebles.jsx      ← entrega los muebles de 10 en 10 (hoy desde Datos; mañana desde una base de datos)
 │   ├── Styles/
@@ -267,15 +282,17 @@ La app usa **Expo Router**: cada archivo dentro de `src/app` es una pantalla y s
 | `mis-encuestas.jsx` | `/mis-encuestas` | (nueva) Encuestas que creé |
 | `mis-votos.jsx` | `/mis-votos` | (nueva) Votos que di |
 
-`encuesta/[id].jsx` muestra una de cinco versiones según cómo va la encuesta:
+`encuesta/[id].jsx` muestra una de cinco versiones según el estado de la encuesta (sección 9):
 
-| Cómo va | Lo que se ve | Botones |
+| Estado | Lo que se ve | Botones |
 |---|---|---|
-| Activa | Pregunta, votos, "cierra en …" y los botones para votar o cambiar el voto | Volver a Encuestas |
+| Activa | Pregunta, votos, "cierra en …" y los botones para votar o cambiar el voto | Volver a Encuestas. Quien la creó ve además **Cerrar la encuesta ahora** |
+| Empate (19) | "¡Empate 1 – 1!", barras, cómo funciona el desempate y cuántos han votado en él | Desempatar de forma anónima (o Cambiar mi voto de desempate) · Volver a mood boards. Quien la creó ve **Cerrar el desempate ahora** |
 | Ganó el sí (24) | Foto, barras de votos y aviso verde | Comprar mueble · Volver a Encuestas |
-| No ganó (25, 25b) | Barras, aviso amarillo y 3 sugerencias para elegir | Hacer nueva propuesta · Volver a Encuestas |
-| Empate (19) | "¡Empate 1 – 1!", barras y cómo funciona el desempate | Desempatar de forma anónima · Volver a mood boards |
-| Decisión final (21) | Resultado del desempate y cómo se llegó a él | Ir a Encuestas · Volver a mood boards |
+| Decisión final (21) | El desempate dijo que sí: resultado y cómo se llegó a él | Ir a Encuestas · Volver a mood boards |
+| No ganó (25, 25b) | Barras, por qué no ganó y 3 sugerencias para elegir | Hacer nueva propuesta (o Ir a mood boards si no hay sugerencias) · Volver a Encuestas |
+
+Si alguien vota y con ese voto ya votaron todos, la pantalla cambia sola al resultado. Desde la lista de Encuestas pasa lo mismo: la app abre el resultado.
 
 ### Flujo entre pantallas
 
@@ -376,7 +393,10 @@ assets/Datos   →   assets/Servicios   →   AppContexto (useState)   →   pan
 | `crearMoodboard(nombre, ideas, vibras, compartido)` | Crea un mood board y devuelve su id | Nuevo mood board |
 | `agregarIdea(idMoodboard, idea)` | Agrega un mueble o una foto al mood board y devuelve el id de la idea | Agregar idea, Detalle |
 | `crearEncuesta(idMueble, idMoodboard, pregunta, textoSi, textoNo, horas)` | Crea una encuesta activa que cierra en esas horas | Nueva encuesta |
-| `votar(idEncuesta, valor, ronda)` | Guarda el voto (`"si"` o `"no"`). Si la persona ya había votado en esa ronda, cambia su voto | Encuestas, Encuesta, Desempate |
+| `votar(idEncuesta, valor)` | Guarda el voto (`"si"` o `"no"`) en la ronda abierta. Si la persona ya había votado en esa ronda, cambia su voto. Si con ese voto ya votaron todos, cierra la ronda. Devuelve el estado de la encuesta después de votar | Encuestas, Encuesta, Desempate |
+| `cerrarEncuesta(idEncuesta)` | Quien creó la encuesta la cierra antes de tiempo: se cuentan los votos que hay. Devuelve el estado nuevo | Encuesta (activa y empate) |
+
+Además, `AppContexto` tiene un `useEffect` con `setInterval` que **cada 30 segundos** revisa si a alguna encuesta se le acabó el tiempo y la cierra.
 
 ### Modelo de datos
 
@@ -386,7 +406,7 @@ assets/Datos   →   assets/Servicios   →   AppContexto (useState)   →   pan
 | `usuarios.jsx` | `id`, `nombre`, `correo`, `contrasena`, `iniciales`, `colorAvatar`, `convive`, `vibras`, `id_casa`, `guardados` (ids de muebles), `notificaciones` (`{ activas, nuevas, resultados }`) |
 | `muebles.jsx` | `id`, `nombre`, `categoria`, `precio`, `imagen`, `proporcion` (alto ÷ ancho de la foto), `tienda`, `largo`, `ancho`, `alto`, `color`, `materiales`, `estilo`, `descripcion`, `colores` (los 5 colores principales de la foto) |
 | `moodboards.jsx` | `id`, `nombre`, `id_dueno`, `ideas` (cada una es `{ id, id_mueble }` o `{ id, foto, colores }`), `vibras`, `descripcion`, `compartido` (`false` = borrador) |
-| `encuestas.jsx` | `id`, `id_mueble`, `id_moodboard`, `id_creador`, `pregunta`, `texto_si`, `texto_no`, `creada`, `cierra`, `estado` (`"activa"`, `"aprobada"`, `"rechazada"` o `"empate"`), `ronda` (1 normal, 2 desempate) |
+| `encuestas.jsx` | `id`, `id_mueble`, `id_moodboard`, `id_creador`, `pregunta`, `texto_si`, `texto_no`, `creada`, `cierra` (cuándo se cierra la ronda abierta, o cuándo se cerró la encuesta), `estado` (`"activa"`, `"empate"`, `"aprobada"` o `"rechazada"`), `ronda` (la que se vota ahora o en la que se decidió: 1 normal, 2 desempate) |
 | `votos.jsx` | `id`, `id_encuesta`, `id_usuario`, `ronda`, `valor` (`"si"` o `"no"`) |
 | `opciones.jsx` | Listas fijas: categorías, vibras, con quién vives, duraciones de una encuesta y textos de los botones de voto |
 
@@ -406,19 +426,19 @@ Cambios frente a la propuesta de la Fase 1:
 
 | Encuesta | Mueble | Estado | Sirve para ver |
 |---|---|---|---|
-| `e1` | Sofá 3 puestos | Activa, 2 – 0 (falta Valentina) | Votar desde la lista |
-| `e2` | Lámpara de arco | Activa, 1 – 1 (falta Ana) | Votar desde la lista |
-| `e3` | Silla de comedor | Activa, 1 – 0 (faltan Ana y Mateo) | Votar desde la lista |
+| `e1` | Sofá 3 puestos | Activa, 2 – 0 (falta Valentina); cierra en 42 h | Votar desde la lista |
+| `e2` | Lámpara de arco | Activa, 1 – 1 (falta Ana); cierra en 4 h; la creó Mateo | El voto de Ana la cierra. Mateo la puede cerrar antes |
+| `e3` | Silla de comedor | Activa, 1 – 0 (faltan Ana y Mateo); cierra en 70 h | Votar y cambiar el voto |
 | `e4` | Mesa de comedor | Ganó el sí, 2 – 1 | 24 · Resultado con "Comprar mueble" |
 | `e5` | Lámpara de pie | No ganó, 1 – 2 | 25 · Resultado con sugerencias |
-| `e6` | Love seat azul | Empate, 1 – 1 | 19 · Empate y 20 · Desempate |
+| `e6` | Love seat azul | Empate 1 – 1; el desempate va 1 – 1, falta Ana y cierra en 20 h | 19 · Empate y 20 · Desempate: el voto de Ana decide |
 | `e7` | Planta monstera | Empate 1 – 1 y desempate 2 – 1 | 21 · Decisión final |
 
 ---
 
 ## 7. Componentes
 
-Están en `assets/Components`. Cada uno es una función con sus props entre llaves y `export default` al final, como `ProductoItem` en la plantilla. Son los 20 de la propuesta más `Catalogo`, que junta los chips y la grilla para usarlos en Explorar y en Agregar idea.
+Están en `assets/Components`. Cada uno es una función con sus props entre llaves y `export default` al final, como `ProductoItem` en la plantilla. Son los 20 de la propuesta más dos: `Catalogo`, que junta los chips y la grilla para usarlos en Explorar y en Agregar idea, y `CerrarEncuesta` (Fase 4).
 
 | Componente | Para qué sirve | Props |
 |---|---|---|
@@ -443,6 +463,7 @@ Están en `assets/Components`. Cada uno es una función con sus props entre llav
 | `TarjetaOpcion` | Fila con foto, título, subtítulo y círculo para elegir (sugerencias, desempate, hoja de guardar) | `foto`, `titulo`, `subtitulo`, `seleccionado`, `alPresionar`, `tamanoFoto` |
 | `TarjetaEstadistica` | Número grande con su etiqueta (perfil y medidas del mueble) | `numero`, `etiqueta`, `alPresionar` |
 | `FilaAjuste` | Fila del perfil con ícono y flecha o interruptor | `Icono`, `texto`, `alPresionar`, `derecha` |
+| `CerrarEncuesta` | Botón para que quien creó la encuesta la cierre antes. Primero pide confirmar y explica qué va a pasar | `texto`, `explicacion`, `alConfirmar` |
 
 Ejemplo de uso, tomado de `src/app/(tabs)/encuestas.jsx`:
 
@@ -455,13 +476,15 @@ Ejemplo de uso, tomado de `src/app/(tabs)/encuestas.jsx`:
   conteo={contarVotos(votos, encuesta.id, encuesta.ronda)}
   miVoto={votoDe(votos, encuesta.id, usuario.id, encuesta.ronda)}
   alVotar={function (valor) {
-    votar(encuesta.id, valor);
+    votarDesdeLaLista(encuesta, valor);
   }}
   alAbrir={function () {
     abrir(encuesta);
   }}
 />
 ```
+
+`votarDesdeLaLista` llama a `votar` y, si la encuesta se cerró con ese voto, abre su resultado.
 
 Los botones usan `TouchableOpacity`, que se aclara un poco al tocarlo.
 
@@ -473,9 +496,9 @@ Son funciones que no dibujan nada: reciben datos y devuelven un resultado. Así 
 
 | Archivo | Funciones |
 |---|---|
-| `textos.jsx` | `formatearPrecio(890000)` → "$ 890.000" · `primerNombre("Ana Gómez")` → "Ana" · `unirNombres(["Ana", "Mateo", "Valentina"])` → "Ana, Mateo y Valentina" · `describirVibra(["Cálido", "Natural"])` → "Cálida y natural" · `textoVotos(1)` → "1 voto" · `textoIdeas(1)` → "1 idea" · `tiempoRestante(cierra)` → "cierra en 4 h" · `sinTildes("Lámpara")` → "lampara" (para buscar con o sin tilde) |
-| `paleta.jsx` | `paletaDeIdeas(ideas)`, `coloresDeFoto(uri)` y `queCombina(colores)` |
-| `votacion.jsx` | `contarVotos(votos, idEncuesta, ronda)` → `{ si, no, total }` · `votoDe(...)` → `"si"`, `"no"` o `null` · `resumenEncuesta(encuesta, votos)` → "Ganó «Me gusta» · 2 – 1" · `sugerirMuebles(...)` |
+| `textos.jsx` | `formatearPrecio(890000)` → "$ 890.000" · `primerNombre("Ana Gómez")` → "Ana" · `unirNombres(["Ana", "Mateo", "Valentina"])` → "Ana, Mateo y Valentina" · `describirVibra(["Cálido", "Natural"])` → "Cálida y natural" · `textoVotos(1)` → "1 voto" · `textoIdeas(1)` → "1 idea" · `tiempoRestante(cierra)` → "cierra en 25 min", "cierra en 4 h" o "cierra en 3 días" · `sinTildes("Lámpara")` → "lampara" (para buscar con o sin tilde) |
+| `paleta.jsx` | `paletaDeIdeas(ideas)`, `coloresDeFoto(uri)`, `queCombina(colores)` y `coloresParecidos(colores, paleta)` |
+| `votacion.jsx` | Las reglas de la votación: se explican en la sección 9 |
 
 ### La paleta de un mood board
 
@@ -497,13 +520,99 @@ Los muebles de prueba ya traen sus colores. Para una foto subida con "+ Fotos", 
 - **Muebles:** el más vivo de los que quedan.
 - **Luz:** cálida si la paleta tiene más rojo que azul; si no, fría.
 
+---
+
+## 9. Cómo funciona la votación
+
+Las reglas están en `assets/Logica/votacion.jsx`; `AppContexto` las usa para guardar los cambios. Siguen la sección 7 de la propuesta de la Fase 1.
+
+### Los estados de una encuesta
+
+```mermaid
+stateDiagram-v2
+  [*] --> activa: Publicar encuesta
+  activa --> aprobada: más sí que no
+  activa --> rechazada: más no que sí, o nadie votó
+  activa --> empate: igual número de sí y no
+  empate --> aprobada: el desempate da más sí
+  empate --> rechazada: el desempate da más no, sigue empatado o nadie votó
+  aprobada --> [*]
+  rechazada --> [*]
+```
+
+| Estado | Qué significa | `ronda` |
+|---|---|---|
+| `activa` | Está abierta la primera votación | 1 |
+| `empate` | La primera votación quedó empatada y está abierto el desempate | 2 |
+| `aprobada` | Ganó el sí: el mueble se pone | 1, o 2 si se decidió en el desempate |
+| `rechazada` | No ganó: el mueble no se pone y se muestran sugerencias | 1 o 2 |
+
+### Paso a paso
+
+1. **Crear.** Desde un mood board se elige un objeto, se escribe la pregunta y los textos de los dos botones, y se elige cuánto dura: 24 h, 48 h o 3 días.
+2. **Votar.** Cada roommate vota desde la lista o desde la encuesta, y puede cambiar su voto mientras siga abierta. Solo se ven los totales ("Votaron 2 de 3 inquilinos"), nunca quién votó qué.
+3. **Cerrar.** Una ronda se cierra en el primero de estos momentos:
+   - **Cuando votan todos** los roommates de la casa. Lo revisa `votar` después de guardar cada voto.
+   - **Cuando se acaba el tiempo.** La app lo revisa cada 30 segundos mientras está abierta.
+   - **Cuando quien la creó la cierra antes** con "Cerrar la encuesta ahora". Sirve para probar un empate sin esperar 24 horas.
+4. **Contar.** Al cerrar se cuentan los votos de esa ronda:
+
+   | Resultado de la ronda | En la primera votación | En el desempate |
+   |---|---|---|
+   | Más "sí" que "no" | Aprobada | Aprobada (decisión final) |
+   | Más "no" que "sí" | Rechazada | Rechazada |
+   | Igual número | **Empieza el desempate** | Rechazada: el mueble no se pone |
+   | Nadie votó | Rechazada | Rechazada |
+
+5. **Desempatar.** Cada roommate vota otra vez, de forma anónima, en la ronda 2. El desempate dura 24 horas y se cierra igual que la primera votación: cuando votan todos, cuando se acaba el tiempo o cuando quien la creó lo cierra antes.
+6. **Sugerir alternativas.** Si el mueble no ganó, la pantalla de resultado muestra hasta 3 muebles para hacer una nueva propuesta (ver abajo).
+
+**Ejemplo con los datos de prueba.** El "Love seat azul" quedó 1 – 1 porque Valentina no alcanzó a votar a tiempo. Empezó el desempate: Mateo votó "No ponerlo" y Valentina "Sí, ponerlo", así que va 1 – 1 y falta Ana. Si Ana vota "Sí, ponerlo", termina 2 – 1 y sale la decisión final: el love seat se pone. Si vota "No ponerlo", termina 1 – 2 y la app sugiere otros muebles.
+
+### Las funciones de `votacion.jsx`
+
+| Función | Qué hace |
+|---|---|
+| `contarVotos(votos, idEncuesta, ronda)` | Cuenta los votos de una ronda: `{ si: 2, no: 1, total: 3 }` |
+| `votoDe(votos, idEncuesta, idUsuario, ronda)` | Lo que votó una persona: `"si"`, `"no"` o `null` |
+| `estaAbierta(encuesta)` | `true` si todavía se puede votar (estado `activa` o `empate`) |
+| `resultadoDeRonda(conteo, ronda)` | Cómo termina una ronda: `"aprobada"`, `"rechazada"` o `"empate"` (la tabla del paso 4) |
+| `debeCerrarse(encuesta, votos, cantidadRoommates, ahora)` | `true` si ya votaron todos o si se acabó el tiempo |
+| `cerrarRonda(encuesta, votos, ahora)` | Devuelve la encuesta con su estado nuevo. Si hay empate en la ronda 1, abre el desempate (ronda 2, 24 horas) |
+| `resumenEncuesta(encuesta, votos)` | La línea de las listas: "Ganó «Me gusta» · 2 – 1", "Empate 1 – 1 · el desempate cierra en 20 h"… |
+| `motivoRechazo(encuesta, votos)` | Por qué no ganó: "Ganó el «No» en el desempate. Haz una nueva propuesta." |
+| `textoAlCerrar(encuesta, votos)` | Qué pasaría si se cierra ahora (lo muestra la confirmación de "Cerrar la encuesta ahora") |
+| `marcador(conteo)` | "2 – 1", sin que se parta en dos líneas |
+| `sugerirMuebles(encuesta, moodboards, roommates, encuestas)` | Los 3 muebles sugeridos cuando una encuesta no gana |
+
+Así se usan desde `AppContexto` cuando alguien vota:
+
+```jsx
+const votosNuevos = sinMiVoto.concat(nuevo);
+setVotos(votosNuevos);
+
+const ahora = Date.now();
+if (debeCerrarse(encuesta, votosNuevos, roommates.length, ahora)) {
+  const cerrada = cerrarRonda(encuesta, votosNuevos, ahora);
+  actualizarEncuesta(cerrada);
+  return cerrada.estado;
+}
+return encuesta.estado;
+```
+
 ### Sugerencias cuando una encuesta no gana
 
-`sugerirMuebles` busca los muebles de los mood boards de la casa, menos el que perdió. Da 10 puntos si es de la misma categoría y 1 punto por cada roommate que lo tiene en sus mood boards. Muestra los 3 mejores con "Coincide con Ana y Mateo". En la Fase 4 también va a comparar los colores.
+`sugerirMuebles` busca en los mood boards **compartidos** de los roommates (los borradores son privados) y deja por fuera los muebles que ya tienen una encuesta. A cada mueble le da puntos:
+
+- **+100** si es de la misma categoría que el que no ganó (si no ganó una lámpara, primero salen lámparas).
+- **+10** por cada roommate que lo tiene en sus mood boards.
+- **+1** por cada color suyo parecido a la paleta del mood board de la encuesta (`coloresParecidos`, con la misma regla de "parecido" de la paleta).
+
+Así cuenta primero la categoría, después cuántos lo quieren y al final los colores. Muestra los 3 con más puntos, con "Coincide con Ana y Mateo". Por ejemplo, cuando no ganó la "Lámpara de pie" sugiere la "Lámpara colgante" (misma categoría), la "Planta decorativa" (la tienen Ana y Valentina) y el "Estante blanco" (3 de sus colores combinan con «Rincón verde»).
 
 ---
 
-## 9. Decisiones tomadas donde el Figma no era explícito
+## 10. Decisiones tomadas donde el Figma no era explícito
 
 ### Fase 2
 
@@ -544,22 +653,53 @@ Los muebles de prueba ya traen sus colores. Para una foto subida con "+ Fotos", 
 | Ancho en el computador | En la versión web la app se queda del ancho de un teléfono (máximo 480 px), en el centro de la ventana. |
 | Permiso de fotos | `app.json` declara el permiso para leer fotos (para "+ Fotos") y quita los de cámara y micrófono, que la app no usa. |
 
+### Fase 4
+
+| Tema | Decisión |
+|---|---|
+| Nadie votó | Si una ronda se cierra sin votos, el mueble no se pone. No se abre un desempate de 0 – 0. |
+| Duración del desempate | 24 horas, sin importar cuánto duró la primera votación. |
+| Empate en el desempate | El mueble no se pone y se muestran sugerencias, como dice la propuesta. |
+| Decisión final (21) | Se muestra cuando el desempate aprueba el mueble. Si el desempate no lo aprueba, se muestra "No ganó" con el motivo y las sugerencias. |
+| Cierre con el último voto | La ronda se cierra en el momento en que vota el último roommate; desde ahí ya no se puede cambiar el voto. Si ese voto se dio desde la lista, la app abre el resultado. |
+| Quiénes cuentan como "todos" | Los roommates de la casa en ese momento. Si alguien nuevo se registra, las encuestas abiertas también esperan su voto. |
+| Revisión del tiempo | Cada 30 segundos, mientras la app está abierta. Cuando falta menos de una hora, "cierra en …" dice los minutos. |
+| Cerrar antes | Solo quien creó la encuesta. Antes de cerrar, la app dice qué va a pasar con los votos que hay ("Si cierras ahora, queda empate 1 – 1 y empieza el desempate"). |
+| Sección "Por desempatar" | En Encuestas, entre las activas y las terminadas, con "falta tu voto" o "ya votaste". Las terminadas van de la más reciente a la más antigua. |
+| Volver a poner a votación | No se puede elegir un mueble que está en votación, en desempate o ya aprobado. Uno que no ganó sí se puede volver a proponer. |
+| Sugerencias | Solo de mood boards compartidos (los borradores son privados) y sin muebles que ya tienen encuesta. Si no queda ninguno, el botón cambia a "Ir a mood boards". |
+| Marcador | "2 – 1" se escribe con espacios que no se cortan, para que no quede partido en dos líneas. |
+
 ---
 
-## 10. Cómo se revisó la Fase 3
+## 11. Cómo se revisó
+
+### Fase 3
 
 - **ESLint** (el revisor de código): sin errores en `src` ni en `assets`.
 - **Compilación para Android e iOS** (`npx expo export`): sin errores.
-- **Recorrido automático en el navegador**, al tamaño de un teléfono (390 × 844): 41 pasos que usan la app como una persona, desde un inicio de sesión con la contraseña equivocada hasta crear una cuenta nueva. Incluye buscar, filtrar, bajar hasta cargar las 21 ideas, guardar en un mood board, agregar una idea, crear y publicar una encuesta, votar, ver los cinco tipos de resultado, desempatar, subir una foto y recargar la página sin sesión. Terminó sin errores ni advertencias en la consola.
-- **Comparación con el Figma**: 10 pantallas lado a lado. Las diferencias son las de la sección 9. Además, en el navegador todo queda un poco más arriba, porque no hay barra de hora y batería.
+- **Recorrido automático en el navegador**, al tamaño de un teléfono (390 × 844): 41 pasos que usan la app como una persona, desde un inicio de sesión con la contraseña equivocada hasta crear una cuenta nueva. Incluye buscar, filtrar, bajar hasta cargar las 21 ideas, guardar en un mood board, agregar una idea, crear y publicar una encuesta, votar, ver los tipos de resultado, desempatar, subir una foto y recargar la página sin sesión. Terminó sin errores ni advertencias en la consola.
+- **Comparación con el Figma**: 10 pantallas lado a lado. Las diferencias son las de la sección 10. Además, en el navegador todo queda un poco más arriba, porque no hay barra de hora y batería.
+
+### Fase 4
+
+- **Pruebas de las reglas** (38 casos, en Node): cada fila de la tabla del paso 4 en las dos rondas, cuándo se debe cerrar una ronda, que el desempate dure 24 horas, los textos de cada resultado, "cierra en 25 min" y las sugerencias (que ninguna tenga encuesta, que la primera sea de la misma categoría y que no salgan del borrador de Ana).
+- **Cinco casos en el navegador**, cada uno con los datos limpios:
+  1. El voto de Ana cierra la "Lámpara de arco"; luego el desempate del "Love seat azul" termina en No, salen las sugerencias y se publica una nueva propuesta.
+  2. El mismo desempate termina en Sí y sale la decisión final.
+  3. Mateo cierra antes su encuesta (empate), vota en el desempate y lo cierra antes (decisión final 1 – 0). Ana no ve el botón de cerrar en encuestas que no creó.
+  4. Con el reloj del navegador adelantado: la encuesta dice "cierra en 25 min", pasa sola al empate cuando se acaba el tiempo y, 80 horas después, todas quedaron cerradas con el resultado correcto y en el orden correcto.
+  5. "Poner a votación" bloquea los muebles en votación, en desempate o aprobados, y deja volver a proponer uno que no ganó.
+- **El recorrido de 41 pasos de la Fase 3** se volvió a correr completo.
+- **ESLint**, ahora también con la regla que revisa las dependencias de `useEffect`, y **la compilación para Android e iOS**: sin errores.
+- Ningún caso dejó errores ni advertencias en la consola.
 
 ---
 
-## 11. Lo que sigue
+## 12. Lo que sigue
 
-- **Fase 4: lógica de votación** (sección 7 de la propuesta):
-  - Cerrar las encuestas cuando votan todos o cuando se acaba el tiempo, y que quien la creó pueda cerrarla antes.
-  - Contar los votos al cerrar: ganó el sí, no ganó o empate.
-  - Desempate completo. Hoy el voto de desempate se guarda, pero la encuesta sigue en "empate". En la Fase 4 la segunda ronda decide, y si sigue el empate el mueble no se pone.
-  - Sugerencias que también comparan los colores.
-- **Fase 5:** revisión final y esta guía completa: votación paso a paso y cómo conectar un backend real.
+- **Fase 5: revisión final.**
+  - Repasar todas las pantallas contra el Figma una última vez.
+  - Explicar en esta guía cómo conectar una base de datos real (por ejemplo Supabase, como en la plantilla cafe-app): qué tablas crear a partir de `assets/Datos` y qué funciones cambian.
+  - Dejar la guía lista para entregar.
+- **Pendiente de ti:** fotos de camas, clósets y tocadores para llegar a unos 30 muebles.

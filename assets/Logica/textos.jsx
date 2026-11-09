@@ -41,12 +41,16 @@ function textoIdeas(cantidad) {
   return cantidad === 1 ? "1 idea" : cantidad + " ideas";
 }
 
-// Cuánto falta para que cierre una encuesta: "cierra en 4 h" o "cierra en 2 días"
+// Cuánto falta para que cierre una encuesta: "cierra en 25 min", "cierra en 4 h" o "cierra en 3 días"
 function tiempoRestante(cierra) {
-  const horas = Math.ceil((cierra - Date.now()) / (60 * 60 * 1000));
-  if (horas <= 0) {
-    return "cerrada";
+  const minutos = Math.ceil((cierra - Date.now()) / (60 * 1000));
+  if (minutos <= 0) {
+    return "se está cerrando"; // la app la cierra en menos de medio minuto
   }
+  if (minutos < 60) {
+    return "cierra en " + minutos + " min";
+  }
+  const horas = Math.ceil(minutos / 60);
   if (horas < 48) {
     return "cierra en " + horas + " h";
   }

@@ -4,19 +4,19 @@ import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Boton from "../../../assets/Components/Boton";
 import Encabezado from "../../../assets/Components/Encabezado";
+import EstadoVacio from "../../../assets/Components/EstadoVacio";
 import TarjetaOpcion from "../../../assets/Components/TarjetaOpcion";
 import { AppContexto } from "../../../assets/Contexto/AppContexto";
-import { votoDe } from "../../../assets/Logica/votacion";
+import { tiempoRestante } from "../../../assets/Logica/textos";
+import { contarVotos, votoDe } from "../../../assets/Logica/votacion";
 import { buscarMueble } from "../../../assets/Servicios/muebles";
 import { general } from "../../../assets/Styles/Stylesheet";
 
-// Ronda de desempate (ronda 2 de la encuesta)
-const RONDA_DESEMPATE = 2;
-
-// Pantalla 20 del Figma: Votación de desempate
+// Pantalla 20 del Figma: Votación de desempate.
+// Mientras la encuesta está en "empate", su ronda abierta es la 2: el voto se guarda en esa ronda.
 function Desempate() {
   const { id } = useLocalSearchParams();
-  const { usuario, encuestas, votos, votar } = useContext(AppContexto);
+  const { usuario, roommates, encuestas, votos, votar } = useContext(AppContexto);
   const [opcion, setOpcion] = useState(null); // "si", "no" o null
 
   if (!usuario) {
@@ -30,16 +30,34 @@ function Desempate() {
     return null;
   }
 
-  const mueble = buscarMueble(encuesta.id_mueble);
-  // Si ya votó en el desempate, se marca su voto; si no, lo que haya tocado ahora
-  const elegida = opcion || votoDe(votos, encuesta.id, usuario.id, RONDA_DESEMPATE);
-
-  function enviarVoto() {
-    votar(encuesta.id, elegida, RONDA_DESEMPATE);
+  function volver() {
     router.back();
   }
 
-  function cancelar() {
+  // Si el desempate ya se cerró, aquí no se puede votar
+  if (encuesta.estado !== "empate") {
+    return (
+      <SafeAreaView style={general.pantalla}>
+        <Encabezado titulo="Desempate" conVolver={true} />
+        <View style={general.contenido}>
+          <EstadoVacio titulo="Este desempate ya terminó" mensaje="Vuelve para ver el resultado." />
+        </View>
+        <View style={general.acciones}>
+          <Boton texto="Ver el resultado" alPresionar={volver} />
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  const mueble = buscarMueble(encuesta.id_mueble);
+  const conteo = contarVotos(votos, encuesta.id, encuesta.ronda);
+  // Si ya votó en el desempate, se marca su voto; si no, lo que haya tocado ahora
+  const elegida = opcion || votoDe(votos, encuesta.id, usuario.id, encuesta.ronda);
+
+  // Guarda el voto y vuelve al resultado. Si con este voto ya votaron todos, el desempate se cierra
+  // y la pantalla de resultado muestra la decisión.
+  function enviarVoto() {
+    votar(encuesta.id, elegida);
     router.back();
   }
 
@@ -69,10 +87,13 @@ function Desempate() {
             setOpcion("no");
           }}
         />
+        <Text style={general.textoPequeno}>
+          Votaron {conteo.total} de {roommates.length} inquilinos · {tiempoRestante(encuesta.cierra)}
+        </Text>
       </ScrollView>
       <View style={general.acciones}>
         <Boton texto="Enviar voto de desempate" alPresionar={enviarVoto} deshabilitado={!elegida} />
-        <Boton texto="Cancelar" tipo="secundario" alPresionar={cancelar} />
+        <Boton texto="Cancelar" tipo="secundario" alPresionar={volver} />
       </View>
     </SafeAreaView>
   );
